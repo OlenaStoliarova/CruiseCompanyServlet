@@ -5,7 +5,7 @@
   <display-name>Archetype Created Web Application</display-name>
   <servlet>
     <servlet-name>CruisesServlet</servlet-name>
-    <servlet-class>ua.training.cruise_company_servlet.controller.MainServlet</servlet-class>
+    <servlet-class>ua.training.cruise_company_servlet.web.MainServlet</servlet-class>
     <!--<load-on-startup>1</load-on-startup>-->
   </servlet>
   <servlet-mapping>
@@ -19,7 +19,7 @@
 
   <filter>
     <filter-name>EncodingFilter</filter-name>
-    <filter-class>ua.training.cruise_company_servlet.controller.filter.EncodingFilter</filter-class>
+    <filter-class>ua.training.cruise_company_servlet.web.filter.EncodingFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>EncodingFilter</filter-name>
@@ -28,7 +28,7 @@
 
   <filter>
     <filter-name>AuthFilter</filter-name>
-    <filter-class>ua.training.cruise_company_servlet.controller.filter.AuthFilter</filter-class>
+    <filter-class>ua.training.cruise_company_servlet.web.filter.AuthFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>AuthFilter</filter-name>
@@ -37,7 +37,7 @@
 
   <filter>
     <filter-name>SessionLocaleFilter</filter-name>
-    <filter-class>ua.training.cruise_company_servlet.controller.filter.SessionLocaleFilter</filter-class>
+    <filter-class>ua.training.cruise_company_servlet.web.filter.SessionLocaleFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>SessionLocaleFilter</filter-name>
@@ -45,7 +45,7 @@
   </filter-mapping>
 
   <listener>
-    <listener-class>ua.training.cruise_company_servlet.controller.listener.SessionListener</listener-class>
+    <listener-class>ua.training.cruise_company_servlet.web.listener.SessionListener</listener-class>
   </listener>
 
   <resource-ref>
