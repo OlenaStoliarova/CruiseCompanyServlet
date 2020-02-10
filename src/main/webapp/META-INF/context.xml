@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+    <!-- Specify a JDBC datasource -->
+    <Resource name="jdbc/CruiseCompany"
+        auth="Container"
+        type="javax.sql.DataSource"
+        username="elena"
+        password="reload12"
+        driverClassName="com.mysql.cj.jdbc.Driver"
+        url="jdbc:mysql://localhost:3306/cruise_company?autoReconnect=true"
+        validationQuery="select 1"
+        maxActive="100"
+        maxIdle="10"/>
+</Context>
