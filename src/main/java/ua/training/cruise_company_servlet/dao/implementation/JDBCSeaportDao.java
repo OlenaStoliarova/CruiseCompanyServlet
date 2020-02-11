@@ -1,143 +1,93 @@
  package ua.training.cruise_company_servlet.dao.implementation;
 
- import org.apache.logging.log4j.LogManager;
- import org.apache.logging.log4j.Logger;
- import ua.training.cruise_company_servlet.dao.DAOLevelException;
  import ua.training.cruise_company_servlet.dao.SeaportDao;
- import ua.training.cruise_company_servlet.dao.mapper.SeaportMapper;
  import ua.training.cruise_company_servlet.entity.Seaport;
 
- import java.sql.*;
- import java.util.ArrayList;
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
  import java.util.List;
  import java.util.Optional;
 
-public class JDBCSeaportDao implements SeaportDao {
-    private static final Logger LOG = LogManager.getLogger(JDBCSeaportDao.class);
+public class JDBCSeaportDao extends JDBCAbstractDao<Seaport> implements SeaportDao {
+    private static final String TABLE = "seaport";
+    private static final String COLUMN_NAME_EN = "name_en";
+    private static final String COLUMN_COUNTRY_EN = "country_en";
+    private static final String COLUMN_NAME_UKR = "name_ukr";
+    private static final String COLUMN_COUNTRY_UKR = "country_ukr";
 
-    private static final String INSERT_NEW_PORT ="INSERT INTO seaport (name_en, country_en, name_ukr, country_ukr) VALUES (?, ?, ?, ?)";
-    private static final String SELECT_PORT_BY_ID = "SELECT * FROM seaport WHERE id=?";
-    private static final String SELECT_PORT_BY_NAME_EN = "SELECT * FROM seaport WHERE name_en=?";
-    private static final String SELECT_ALL_PORTS = "SELECT * FROM seaport";
-    private static final String DELETE_PORT_BY_ID = "DELETE FROM seaport WHERE id=?";
+    private static final String INSERT_NEW_PORT = "INSERT INTO " + TABLE +
+                                                  " (" + COLUMN_NAME_EN + ", " + COLUMN_COUNTRY_EN + ", " +
+                                                    COLUMN_NAME_UKR + ", " + COLUMN_COUNTRY_UKR + ") VALUES (?, ?, ?, ?)";
 
-    private static final String UPDATE_PORT = "UPDATE seaport " +
-            "SET name_en=? , country_en=?, name_ukr=?, country_ukr=? " +
-            "WHERE id=?";
+    private static final String SELECT_PORT_BY_ID = "SELECT * FROM " + TABLE + " WHERE " + COLUMN_ID + "=?";
+    private static final String SELECT_PORT_BY_NAME_EN = "SELECT * FROM " + TABLE + " WHERE " + COLUMN_NAME_EN + "=?";
+    private static final String SELECT_ALL_PORTS = "SELECT * FROM " + TABLE;
+    private static final String DELETE_PORT_BY_ID = "DELETE FROM " + TABLE + " WHERE " + COLUMN_ID + "=?";
+
+    private static final String UPDATE_PORT = "UPDATE " + TABLE + " SET " +
+                                                COLUMN_NAME_EN + "=?, " + COLUMN_COUNTRY_EN + "=?, " +
+                                                COLUMN_NAME_UKR + "=?, " + COLUMN_COUNTRY_UKR + "=? " +
+                                                "WHERE " + COLUMN_ID + "=?";
 
     @Override
     public boolean create(Seaport entity) {
-        try(Connection connection = ConnectionPoolHolder.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_NEW_PORT)) {
-
+        return executeCUDQuery(INSERT_NEW_PORT, preparedStatement -> {
             preparedStatement.setString(1, entity.getNameEn());
             preparedStatement.setString(2, entity.getCountryEn());
             preparedStatement.setString(3, entity.getNameUkr());
             preparedStatement.setString(4, entity.getCountryUkr());
-
-            return 1 == preparedStatement.executeUpdate(); //one row was inserted
-        }catch (SQLIntegrityConstraintViolationException ex){
-            LOG.error(ex.getMessage(), ex);
-            return false;
-        } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
-            throw new DAOLevelException(e);
-        }
+        });
     }
 
     @Override
     public Optional<Seaport> findById(long id) {
-        Optional<Seaport> foundPort = Optional.empty();
-
-        try(Connection connection = ConnectionPoolHolder.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(SELECT_PORT_BY_ID)) {
-
-            preparedStatement.setLong(1, id);
-            try(ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    foundPort = Optional.of(new SeaportMapper().extractFromResultSet(resultSet));
-                }
-            }
-        } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
-            throw new DAOLevelException(e);
-        }
-
-        return foundPort;
+        return selectOne(SELECT_PORT_BY_ID,
+                preparedStatement -> preparedStatement.setLong(1, id),
+                new SeaportMapper());
     }
 
     @Override
     public Optional<Seaport> findByNameEn(String  nameEn) {
-        Optional<Seaport> foundPort = Optional.empty();
-
-        try(Connection connection = ConnectionPoolHolder.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(SELECT_PORT_BY_NAME_EN)) {
-
-            preparedStatement.setString(1, nameEn);
-            try(ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    foundPort = Optional.of(new SeaportMapper().extractFromResultSet(resultSet));
-                }
-            }
-        } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
-            throw new DAOLevelException(e);
-        }
-
-        return foundPort;
+        return selectOne(SELECT_PORT_BY_NAME_EN,
+                preparedStatement -> preparedStatement.setString(1, nameEn),
+                new SeaportMapper());
     }
 
     @Override
     public List<Seaport> findAll() {
-        List<Seaport> resultList = new ArrayList<>();
-
-        try(Connection connection = ConnectionPoolHolder.getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(SELECT_ALL_PORTS)) {
-
-            while (resultSet.next()) {
-                Seaport seaport = new SeaportMapper().extractFromResultSet(resultSet);
-                resultList.add(seaport);
-            }
-        } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
-            throw new DAOLevelException(e);
-        }
-
-        return resultList;
+        return selectMany(SELECT_ALL_PORTS, preparedStatement -> {}, new SeaportMapper());
     }
 
     @Override
     public boolean update(Seaport entity) {
-        try(Connection connection = ConnectionPoolHolder.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_PORT)) {
-
+        return executeCUDQuery(UPDATE_PORT, preparedStatement ->{
             preparedStatement.setString(1, entity.getNameEn());
             preparedStatement.setString(2, entity.getCountryEn());
             preparedStatement.setString(3, entity.getNameUkr());
             preparedStatement.setString(4, entity.getCountryUkr());
             preparedStatement.setLong(5, entity.getId());
-
-            return 1 == preparedStatement.executeUpdate(); //one row was updated
-        }catch (SQLIntegrityConstraintViolationException ex){
-            LOG.error(ex.getMessage(), ex);
-            return false;
-        } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
-            throw new DAOLevelException(e);
-        }
+        });
     }
 
     @Override
     public boolean delete(long id) {
-        try(Connection connection = ConnectionPoolHolder.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(DELETE_PORT_BY_ID)) {
+        return executeCUDQuery(DELETE_PORT_BY_ID,
+                                preparedStatement ->  preparedStatement.setLong(1, id));
+    }
 
-            preparedStatement.setLong(1, id);
-            return 1 == preparedStatement.executeUpdate(); //one row was deleted
-        } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
-            throw new DAOLevelException(e);
+
+    private static class SeaportMapper implements ObjectMapper<Seaport> {
+        @Override
+        public Seaport extractFromResultSet(ResultSet rs) throws SQLException {
+            Seaport result = new Seaport();
+
+            result.setId( rs.getLong(COLUMN_ID) );
+            result.setNameEn( rs.getString(COLUMN_NAME_EN) );
+            result.setCountryEn( rs.getString(COLUMN_COUNTRY_EN));
+            result.setNameUkr( rs.getString(COLUMN_NAME_UKR));
+            result.setCountryUkr( rs.getString(COLUMN_COUNTRY_UKR));
+
+            return result;
         }
     }
 }

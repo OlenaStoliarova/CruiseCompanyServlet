@@ -8,5 +8,7 @@ public interface GenericDao<T>{
     Optional<T> findById(long id);
     List<T> findAll();
     boolean update(T entity);
-    boolean delete(long id);
+    default boolean delete(long id){
+        throw new UnsupportedOperationException("delete method isn't implemented in DAO for this entity");
+    }
 }
