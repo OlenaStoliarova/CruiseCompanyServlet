@@ -2,14 +2,14 @@ package ua.training.cruise_company_servlet.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.training.cruise_company_servlet.web.form.ExcursionForm;
 import ua.training.cruise_company_servlet.dao.DaoFactory;
 import ua.training.cruise_company_servlet.dao.ExcursionDao;
 import ua.training.cruise_company_servlet.dao.SeaportDao;
-import ua.training.cruise_company_servlet.web.dto.ExcursionForTravelAgentDTO;
-import ua.training.cruise_company_servlet.web.dto.converter.ExcursionDTOConverter;
 import ua.training.cruise_company_servlet.entity.Excursion;
 import ua.training.cruise_company_servlet.entity.Seaport;
+import ua.training.cruise_company_servlet.web.dto.ExcursionForTravelAgentDTO;
+import ua.training.cruise_company_servlet.web.dto.converter.ExcursionDTOConverter;
+import ua.training.cruise_company_servlet.web.form.ExcursionForm;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -39,7 +39,7 @@ public class ExcursionService {
 
     public List<ExcursionForTravelAgentDTO> getAllExcursionsForTravelAgent() {
         List<Excursion> excursions = excursionDao.findAll();
-
+        eagerLoadSeaport(excursions);
         return excursions.stream()
                 .map(ExcursionDTOConverter::convertToDTOForTravelAgent)
                 .collect(Collectors.toList());
@@ -47,7 +47,7 @@ public class ExcursionService {
 
     public List<ExcursionForTravelAgentDTO> getAllExcursionsInSeaportForTravelAgent(long seaportId) {
         List<Excursion> excursions = excursionDao.findBySeaportId(seaportId);
-
+        eagerLoadSeaport(excursions);
         return excursions.stream()
                 .map(ExcursionDTOConverter::convertToDTOForTravelAgent)
                 .collect(Collectors.toList());
@@ -97,5 +97,12 @@ public class ExcursionService {
         seaport.setId(Long.parseLong(form.getSeaportId()));
         excursion.setSeaport(seaport);
         return excursion;
+    }
+
+    private void eagerLoadSeaport(List<Excursion> excursions){
+        for(Excursion excursion : excursions){
+            Seaport seaport = seaportDao.findById(excursion.getSeaport().getId()).orElse(new Seaport());
+            excursion.setSeaport(seaport);
+        }
     }
 }
