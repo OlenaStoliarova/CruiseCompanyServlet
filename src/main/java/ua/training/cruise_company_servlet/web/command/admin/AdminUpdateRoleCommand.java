@@ -20,7 +20,7 @@ public class AdminUpdateRoleCommand implements Command {
         UserService userService = new UserService();
         boolean isSuccess = userService.updateUserRole(userEmail, userRole);
         if( !isSuccess)
-            return "redirect:" + PathConstants.SERVLET_PATH + PathConstants.ADMIN_MANAGE_USERS_COMMAND + "?error_updating_role=true";
-        return "redirect:" + PathConstants.SERVLET_PATH + PathConstants.ADMIN_MANAGE_USERS_COMMAND;
+            return PathConstants.REDIRECT_PREFIX + PathConstants.SERVLET_PATH + PathConstants.ADMIN_MANAGE_USERS_COMMAND + "?error_updating_role=true";
+        return PathConstants.REDIRECT_PREFIX + PathConstants.SERVLET_PATH + PathConstants.ADMIN_MANAGE_USERS_COMMAND;
     }
 }

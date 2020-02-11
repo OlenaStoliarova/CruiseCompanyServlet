@@ -1,7 +1,8 @@
 package ua.training.cruise_company_servlet.web.constant;
 
 public interface PathConstants {
-    String INDEX_PAGE_COMMAND = "";
+    String REDIRECT_PREFIX = "redirect:";
+    String INDEX_PAGE_COMMAND = "/";
     String SERVLET_PATH = "/app/";
 
     String LOGIN_COMMAND = "login";

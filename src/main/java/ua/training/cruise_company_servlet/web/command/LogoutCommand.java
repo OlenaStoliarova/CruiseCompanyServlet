@@ -9,6 +9,6 @@ public class LogoutCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         new Authentication(request.getSession()).doLogout();
-        return "redirect:/" + PathConstants.INDEX_PAGE_COMMAND;
+        return PathConstants.REDIRECT_PREFIX + PathConstants.INDEX_PAGE_COMMAND;
     }
 }

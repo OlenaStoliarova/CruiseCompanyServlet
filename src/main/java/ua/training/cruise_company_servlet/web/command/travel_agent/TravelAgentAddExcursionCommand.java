@@ -45,7 +45,7 @@ public class TravelAgentAddExcursionCommand implements Command {
             return PathConstants.TRAVEL_AGENT_ADD_EXCURSION_JSP;
         }
 
-        return "redirect:" + PathConstants.SERVLET_PATH + PathConstants.TRAVEL_AGENT_MANAGE_EXCURSIONS_COMMAND;
+        return PathConstants.REDIRECT_PREFIX + PathConstants.SERVLET_PATH + PathConstants.TRAVEL_AGENT_MANAGE_EXCURSIONS_COMMAND;
     }
 
 

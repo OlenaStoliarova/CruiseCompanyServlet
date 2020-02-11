@@ -63,7 +63,7 @@ public class TravelAgentEditExcursionCommand implements Command {
             return PathConstants.TRAVEL_AGENT_EDIT_EXCURSION_JSP;
         }
 
-        return "redirect:" + PathConstants.SERVLET_PATH + PathConstants.TRAVEL_AGENT_MANAGE_EXCURSIONS_COMMAND;
+        return PathConstants.REDIRECT_PREFIX + PathConstants.SERVLET_PATH + PathConstants.TRAVEL_AGENT_MANAGE_EXCURSIONS_COMMAND;
     }
 
     private void setExcursionFormAttributes(HttpServletRequest request, ExcursionForm excursionForm){

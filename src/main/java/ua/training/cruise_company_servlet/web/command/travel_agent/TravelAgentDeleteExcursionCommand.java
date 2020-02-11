@@ -19,6 +19,6 @@ public class TravelAgentDeleteExcursionCommand implements Command {
         } else {
             param = "?deleted=false";
         }
-        return "redirect:" + PathConstants.SERVLET_PATH + PathConstants.TRAVEL_AGENT_MANAGE_EXCURSIONS_COMMAND + param;
+        return PathConstants.REDIRECT_PREFIX + PathConstants.SERVLET_PATH + PathConstants.TRAVEL_AGENT_MANAGE_EXCURSIONS_COMMAND + param;
     }
 }
