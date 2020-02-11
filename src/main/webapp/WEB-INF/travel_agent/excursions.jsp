@@ -84,6 +84,9 @@
             </tbody>
         </table>
     </div>
+
+    <c:set var="linkForPagination" value="${pageContext.request.contextPath}/app/travel_agent/excursions"/>
+    <%@ include file="/WEB-INF/fragments/pagination.jsp" %>
 </div>
 
 

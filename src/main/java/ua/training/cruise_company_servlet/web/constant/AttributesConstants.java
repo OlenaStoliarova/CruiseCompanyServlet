@@ -10,13 +10,19 @@ public interface AttributesConstants {
     String ERROR_UNKNOWN_USER = "unknown_user";
     String ERROR_ALREADY_LOGGED_IN = "already_loggedin";
 
+    String PAGE = "page";
+    String SIZE = "size";
+    String PAGINATION_TOTAL_PAGES = "total_pages";
+    String PAGINATION_PAGE_SIZE = "page_size";
+    String PAGINATION_CURRENT_PAGE = "current_page";
+
     String PORT_NAME_EN = "nameEn";
     String PORT_NAME_UKR = "nameUkr";
     String PORT_COUNTRY_EN = "countryEn";
     String PORT_COUNTRY_UKR = "countryUkr";
 
-
     String ALL_SEAPORTS = "all_seaports";
+    String ALL_EXCURSIONS = "all_excursions";
     String EXCURSION_OBJECT = "excursion";
     String EXCURSION_NAME_EN = "nameEn";
     String EXCURSION_NAME_UKR = "nameUkr";
