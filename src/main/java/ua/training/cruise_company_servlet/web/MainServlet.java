@@ -64,8 +64,8 @@ public class MainServlet extends HttpServlet {
 
         String page = command.execute(request);
 
-        if( page.startsWith("redirect:")){
-            page = page.replaceFirst("redirect:", "");
+        if( page.startsWith(PathConstants.REDIRECT_PREFIX)){
+            page = page.replaceFirst(PathConstants.REDIRECT_PREFIX, "");
             response.sendRedirect(page);
         }
         else {

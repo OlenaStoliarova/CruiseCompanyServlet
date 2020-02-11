@@ -21,7 +21,7 @@ public class AdminAddSeaportCommand implements Command {
         String portCountryUkr = request.getParameter(AttributesConstants.PORT_COUNTRY_UKR);
         if( portNameEn == null || portNameEn.equals("") || portCountryEn == null || portCountryEn.equals("") ||
             portNameUkr == null || portNameUkr.equals("") || portCountryUkr == null || portCountryUkr.equals("")){
-            return "redirect:" + PathConstants.SERVLET_PATH + PathConstants.ADMIN_MANAGE_SEAPORTS_COMMAND;
+            return PathConstants.REDIRECT_PREFIX + PathConstants.SERVLET_PATH + PathConstants.ADMIN_MANAGE_SEAPORTS_COMMAND;
         }
         LOG.info( "portNameEn: " + portNameEn + "; portCountryEn: " + portCountryEn + ";");
         LOG.info( "portNameUkr: " + portNameUkr + "; portCountryUkr: " + portCountryUkr + ";");
@@ -35,8 +35,8 @@ public class AdminAddSeaportCommand implements Command {
         SeaportService seaportService = new SeaportService();
         boolean wasCreated = seaportService.savePort(addedSeaport);
         if( !wasCreated)
-            return "redirect:" + PathConstants.SERVLET_PATH + PathConstants.ADMIN_MANAGE_SEAPORTS_COMMAND + "?error=true";
+            return PathConstants.REDIRECT_PREFIX + PathConstants.SERVLET_PATH + PathConstants.ADMIN_MANAGE_SEAPORTS_COMMAND + "?error=true";
         LOG.info("Seaport was added successfully.");
-        return "redirect:" + PathConstants.SERVLET_PATH + PathConstants.ADMIN_MANAGE_SEAPORTS_COMMAND;
+        return PathConstants.REDIRECT_PREFIX + PathConstants.SERVLET_PATH + PathConstants.ADMIN_MANAGE_SEAPORTS_COMMAND;
     }
 }

@@ -39,12 +39,12 @@ public class LoginCommand implements Command {
         }
 
         if( userRole.equals( UserRole.ROLE_ADMIN ))
-            return "redirect:" + PathConstants.SERVLET_PATH + PathConstants.ADMIN_MAIN_COMMAND;
+            return PathConstants.REDIRECT_PREFIX + PathConstants.SERVLET_PATH + PathConstants.ADMIN_MAIN_COMMAND;
         if( userRole.equals( UserRole.ROLE_TRAVEL_AGENT))
-            return "redirect:" + PathConstants.SERVLET_PATH + PathConstants.TRAVEL_AGENT_MAIN_COMMAND;
+            return PathConstants.REDIRECT_PREFIX + PathConstants.SERVLET_PATH + PathConstants.TRAVEL_AGENT_MAIN_COMMAND;
         if( userRole.equals( UserRole.ROLE_TOURIST))
-            return "redirect:" + PathConstants.SERVLET_PATH + PathConstants.TOURIST_MAIN_COMMAND;
+            return PathConstants.REDIRECT_PREFIX + PathConstants.SERVLET_PATH + PathConstants.TOURIST_MAIN_COMMAND;
 
-        return "redirect:/" + PathConstants.INDEX_PAGE_COMMAND;
+        return PathConstants.REDIRECT_PREFIX + PathConstants.INDEX_PAGE_COMMAND;
     }
 }
