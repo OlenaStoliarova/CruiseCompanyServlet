@@ -1,9 +1,14 @@
 package ua.training.cruise_company_servlet.web.command.travel_agent;
 
-import ua.training.cruise_company_servlet.web.command.Command;
-import ua.training.cruise_company_servlet.web.constant.PathConstants;
 import ua.training.cruise_company_servlet.service.ExcursionService;
 import ua.training.cruise_company_servlet.service.SeaportService;
+import ua.training.cruise_company_servlet.utility.Page;
+import ua.training.cruise_company_servlet.utility.PaginationHelper;
+import ua.training.cruise_company_servlet.utility.PaginationSettings;
+import ua.training.cruise_company_servlet.web.command.Command;
+import ua.training.cruise_company_servlet.web.constant.AttributesConstants;
+import ua.training.cruise_company_servlet.web.constant.PathConstants;
+import ua.training.cruise_company_servlet.web.dto.ExcursionForTravelAgentDTO;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,16 +17,24 @@ public class TravelAgentManageExcursionsCommand implements Command {
     public String execute(HttpServletRequest request) {
         SeaportService seaportService = new SeaportService();
         ExcursionService excursionService = new ExcursionService();
-        request.setAttribute("all_seaports", seaportService.getAllSeaportsLocalizedSorted());
+        request.setAttribute(AttributesConstants.ALL_SEAPORTS, seaportService.getAllSeaportsLocalizedSorted());
 
-        String strSeaportId = request.getParameter("seaportId");
+        PaginationSettings paginationSettings = PaginationHelper.getPaginationSettings(request);
+        Page<ExcursionForTravelAgentDTO> page;
+
+        String strSeaportId = request.getParameter(AttributesConstants.EXCURSION_PORT);
         if(strSeaportId != null){
             long seaportId = Long.parseLong(strSeaportId);
-            request.setAttribute("all_excursions", excursionService.getAllExcursionsInSeaportForTravelAgent(seaportId));
+            page = excursionService.getAllExcursionsForTravelAgent(seaportId, paginationSettings);
         }
         else {
-            request.setAttribute("all_excursions", excursionService.getAllExcursionsForTravelAgent());
+            page = excursionService.getAllExcursionsForTravelAgent(paginationSettings);
         }
+
+        request.setAttribute(AttributesConstants.ALL_EXCURSIONS, page.getContent());
+        request.setAttribute(AttributesConstants.PAGINATION_TOTAL_PAGES, page.getTotalPages());
+        request.setAttribute(AttributesConstants.PAGINATION_CURRENT_PAGE, page.getCurrentPageNumber());
+        request.setAttribute(AttributesConstants.PAGINATION_PAGE_SIZE, page.getSize());
 
         return PathConstants.TRAVEL_AGENT_EXCURSIONS_JSP;
     }

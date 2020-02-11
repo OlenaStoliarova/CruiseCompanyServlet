@@ -7,6 +7,8 @@ import ua.training.cruise_company_servlet.dao.ExcursionDao;
 import ua.training.cruise_company_servlet.dao.SeaportDao;
 import ua.training.cruise_company_servlet.entity.Excursion;
 import ua.training.cruise_company_servlet.entity.Seaport;
+import ua.training.cruise_company_servlet.utility.Page;
+import ua.training.cruise_company_servlet.utility.PaginationSettings;
 import ua.training.cruise_company_servlet.web.dto.ExcursionForTravelAgentDTO;
 import ua.training.cruise_company_servlet.web.dto.converter.ExcursionDTOConverter;
 import ua.training.cruise_company_servlet.web.form.ExcursionForm;
@@ -37,20 +39,14 @@ public class ExcursionService {
         }
     }
 
-    public List<ExcursionForTravelAgentDTO> getAllExcursionsForTravelAgent() {
-        List<Excursion> excursions = excursionDao.findAll();
-        eagerLoadSeaport(excursions);
-        return excursions.stream()
-                .map(ExcursionDTOConverter::convertToDTOForTravelAgent)
-                .collect(Collectors.toList());
+    public Page<ExcursionForTravelAgentDTO> getAllExcursionsForTravelAgent(PaginationSettings paginationSettings) {
+        Page<Excursion> excursions = excursionDao.findAllOrderByPrice(paginationSettings);
+        return getExcursionForTravelAgentDTOPage(excursions, paginationSettings);
     }
 
-    public List<ExcursionForTravelAgentDTO> getAllExcursionsInSeaportForTravelAgent(long seaportId) {
-        List<Excursion> excursions = excursionDao.findBySeaportId(seaportId);
-        eagerLoadSeaport(excursions);
-        return excursions.stream()
-                .map(ExcursionDTOConverter::convertToDTOForTravelAgent)
-                .collect(Collectors.toList());
+    public Page<ExcursionForTravelAgentDTO> getAllExcursionsForTravelAgent(long seaportId, PaginationSettings paginationSettings) {
+        Page<Excursion> excursions = excursionDao.findBySeaportIdOrderByNameEn(seaportId,paginationSettings);
+        return getExcursionForTravelAgentDTOPage(excursions, paginationSettings);
     }
 
     public boolean deleteExcursion(Long id){
@@ -104,5 +100,13 @@ public class ExcursionService {
             Seaport seaport = seaportDao.findById(excursion.getSeaport().getId()).orElse(new Seaport());
             excursion.setSeaport(seaport);
         }
+    }
+
+    private Page<ExcursionForTravelAgentDTO> getExcursionForTravelAgentDTOPage(Page<Excursion> excursions, PaginationSettings paginationSettings){
+        eagerLoadSeaport(excursions.getContent());
+        List<ExcursionForTravelAgentDTO> contentDTO = excursions.getContent().stream()
+                .map(ExcursionDTOConverter::convertToDTOForTravelAgent)
+                .collect(Collectors.toList());
+        return new Page<>(contentDTO, paginationSettings, excursions.getTotalElements());
     }
 }

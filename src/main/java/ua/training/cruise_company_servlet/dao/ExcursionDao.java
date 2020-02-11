@@ -1,9 +1,11 @@
 package ua.training.cruise_company_servlet.dao;
 
 import ua.training.cruise_company_servlet.entity.Excursion;
-
-import java.util.List;
+import ua.training.cruise_company_servlet.utility.Page;
+import ua.training.cruise_company_servlet.utility.PaginationSettings;
 
 public interface ExcursionDao extends GenericDao<Excursion> {
-    List<Excursion> findBySeaportId(long seaportId);
+    Page<Excursion> findAllOrderByPrice(PaginationSettings paginationSettings);
+
+    Page<Excursion> findBySeaportIdOrderByNameEn(long seaportId, PaginationSettings paginationSettings);
 }

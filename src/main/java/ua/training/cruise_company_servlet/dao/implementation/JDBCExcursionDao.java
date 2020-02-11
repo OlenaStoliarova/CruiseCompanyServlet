@@ -2,6 +2,8 @@ package ua.training.cruise_company_servlet.dao.implementation;
 
 import ua.training.cruise_company_servlet.dao.ExcursionDao;
 import ua.training.cruise_company_servlet.entity.Excursion;
+import ua.training.cruise_company_servlet.utility.Page;
+import ua.training.cruise_company_servlet.utility.PaginationSettings;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,8 +27,11 @@ public class JDBCExcursionDao extends JDBCAbstractDao<Excursion> implements Excu
             "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     private static final String SELECT_EXCURSION_BY_ID = "SELECT * FROM " + TABLE + " WHERE " + COLUMN_ID + "=?";
-    private static final String SELECT_ALL_EXCURSIONS = "SELECT * FROM excursion"; // + TABLE;
-    private static final String SELECT_ALL_EXCURSIONS_IN_SEAPORT = "SELECT * FROM " + TABLE + " WHERE " + COLUMN_SEAPORT_ID + "=?";
+    private static final String SELECT_ALL_EXCURSIONS = "SELECT * FROM " + TABLE;
+    private static final String SELECT_ALL_EXCURSIONS_ORDER_BY_PRICE = "SELECT * FROM " + TABLE + " ORDER BY " + COLUMN_PRICE + " DESC";
+    private static final String SELECT_ALL_EXCURSIONS_IN_SEAPORT_ORDER_BY_NAME_EN = "SELECT * FROM " + TABLE +
+                                                                                    " WHERE " + COLUMN_SEAPORT_ID + "=?" +
+                                                                                    " ORDER BY " + COLUMN_NAME_EN + " ASC";
     private static final String DELETE_EXCURSION_BY_ID = "DELETE FROM " + TABLE + " WHERE " + COLUMN_ID + "=?";
 
     private static final String UPDATE_EXCURSION = "UPDATE " + TABLE + " SET " +
@@ -61,10 +66,19 @@ public class JDBCExcursionDao extends JDBCAbstractDao<Excursion> implements Excu
     }
 
     @Override
-    public List<Excursion> findBySeaportId(long seaportId) {
-        return selectMany(SELECT_ALL_EXCURSIONS_IN_SEAPORT,
+    public Page<Excursion> findAllOrderByPrice(PaginationSettings paginationSettings) {
+        return selectMany(SELECT_ALL_EXCURSIONS_ORDER_BY_PRICE,
+                            preparedStatement -> {},
+                            new ExcursionMapper(),
+                            paginationSettings);
+    }
+
+    @Override
+    public Page<Excursion> findBySeaportIdOrderByNameEn(long seaportId, PaginationSettings paginationSettings) {
+        return selectMany(SELECT_ALL_EXCURSIONS_IN_SEAPORT_ORDER_BY_NAME_EN,
                 preparedStatement -> preparedStatement.setLong(1, seaportId),
-                new ExcursionMapper());
+                new ExcursionMapper(),
+                paginationSettings);
     }
 
     @Override
