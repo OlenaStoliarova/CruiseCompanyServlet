@@ -27,4 +27,9 @@ public class JDBCDaoFactory extends DaoFactory {
     public ShipDao createShipDao() {
         return new JDBCShipDao();
     }
+
+    @Override
+    public CruiseDao createCruiseDao() {
+        return new JDBCCruiseDao();
+    }
 }

@@ -10,6 +10,7 @@ public abstract class DaoFactory {
     public abstract ExcursionDao createExcursionDao();
     public abstract ExtraDao createExtraDao();
     public abstract ShipDao createShipDao();
+    public abstract CruiseDao createCruiseDao();
 
     public static DaoFactory getInstance(){
         if( daoFactory == null ){
