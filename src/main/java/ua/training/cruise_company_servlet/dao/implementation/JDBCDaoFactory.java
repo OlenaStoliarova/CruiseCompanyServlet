@@ -17,4 +17,14 @@ public class JDBCDaoFactory extends DaoFactory {
     public ExcursionDao createExcursionDao() {
         return new JDBCExcursionDao();
     }
+
+    @Override
+    public ExtraDao createExtraDao() {
+        return new JDBCExtraDao();
+    }
+
+    @Override
+    public ShipDao createShipDao() {
+        return new JDBCShipDao();
+    }
 }

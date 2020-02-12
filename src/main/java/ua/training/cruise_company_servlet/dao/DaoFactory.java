@@ -8,6 +8,8 @@ public abstract class DaoFactory {
     public abstract UserDao createUserDao();
     public abstract SeaportDao createSeaportDao();
     public abstract ExcursionDao createExcursionDao();
+    public abstract ExtraDao createExtraDao();
+    public abstract ShipDao createShipDao();
 
     public static DaoFactory getInstance(){
         if( daoFactory == null ){

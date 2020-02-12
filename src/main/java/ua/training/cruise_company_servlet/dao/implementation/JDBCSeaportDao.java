@@ -29,6 +29,10 @@ public class JDBCSeaportDao extends JDBCAbstractDao<Seaport> implements SeaportD
                                                 COLUMN_NAME_UKR + "=?, " + COLUMN_COUNTRY_UKR + "=? " +
                                                 "WHERE " + COLUMN_ID + "=?";
 
+    private static final String SELECT_ALL_PORTS_OF_SHIP_ROUTE = "SELECT p.* FROM " + TABLE + " AS p " +
+                                                                    "INNER JOIN ship_route_seaport AS srp " +
+                                                                    "ON srp.seaport_id=p." + COLUMN_ID +
+                                                                    " WHERE srp.ship_id=?";
     @Override
     public boolean create(Seaport entity) {
         return executeCUDQuery(INSERT_NEW_PORT, preparedStatement -> {
@@ -56,6 +60,13 @@ public class JDBCSeaportDao extends JDBCAbstractDao<Seaport> implements SeaportD
     @Override
     public List<Seaport> findAll() {
         return selectMany(SELECT_ALL_PORTS, preparedStatement -> {}, new SeaportMapper());
+    }
+
+    @Override
+    public List<Seaport> findAllOfShipRoute(long shipId) {
+        return selectMany(SELECT_ALL_PORTS_OF_SHIP_ROUTE,
+                            preparedStatement -> preparedStatement.setLong(1, shipId),
+                            new SeaportMapper());
     }
 
     @Override
