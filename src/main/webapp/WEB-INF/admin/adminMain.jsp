@@ -20,6 +20,8 @@
 <a href="${pageContext.request.contextPath}/app/admin/users"><fmt:message key="ui.admin.userslist.view" /></a>
 <br/>
 <a href="${pageContext.request.contextPath}/app/admin/seaports"><fmt:message key="ui.ports.view" /></a>
+<br/>
+<a href="${pageContext.request.contextPath}/app/admin/ships"><fmt:message key="ui.ships.view" /></a>
 
 
 </body>

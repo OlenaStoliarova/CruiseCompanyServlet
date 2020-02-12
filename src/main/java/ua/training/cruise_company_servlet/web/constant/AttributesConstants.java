@@ -22,6 +22,7 @@ public interface AttributesConstants {
     String PORT_COUNTRY_UKR = "countryUkr";
 
     String ALL_SEAPORTS = "all_seaports";
+    String ALL_SHIPS = "all_ships";
     String ALL_EXCURSIONS = "all_excursions";
     String EXCURSION_OBJECT = "excursion";
     String EXCURSION_NAME_EN = "nameEn";
