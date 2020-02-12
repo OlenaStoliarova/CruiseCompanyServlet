@@ -32,9 +32,7 @@ public class TravelAgentManageExcursionsCommand implements Command {
         }
 
         request.setAttribute(AttributesConstants.ALL_EXCURSIONS, page.getContent());
-        request.setAttribute(AttributesConstants.PAGINATION_TOTAL_PAGES, page.getTotalPages());
-        request.setAttribute(AttributesConstants.PAGINATION_CURRENT_PAGE, page.getCurrentPageNumber());
-        request.setAttribute(AttributesConstants.PAGINATION_PAGE_SIZE, page.getSize());
+        PaginationHelper.setPaginationAttributes(request, page);
 
         return PathConstants.TRAVEL_AGENT_EXCURSIONS_JSP;
     }

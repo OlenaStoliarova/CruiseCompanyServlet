@@ -37,4 +37,6 @@ public interface AttributesConstants {
     String ERROR_NON_UNIQUE = "non_unique";
     String EXCURSION_ID = "excursionId";
     String ERROR_NO_EXCURSION_FOUND = "no_excursion_found";
+
+    String ALL_CRUISES = "all_cruises";
 }

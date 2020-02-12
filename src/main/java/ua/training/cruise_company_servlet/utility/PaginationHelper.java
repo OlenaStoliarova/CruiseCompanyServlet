@@ -24,4 +24,10 @@ public class PaginationHelper {
             return new PaginationSettings(DEFAULT_PAGE_SIZE, DEFAULT_CURRENT_PAGE);
         }
     }
+
+    public static void setPaginationAttributes(HttpServletRequest request, Page<?> page){
+        request.setAttribute(AttributesConstants.PAGINATION_TOTAL_PAGES, page.getTotalPages());
+        request.setAttribute(AttributesConstants.PAGINATION_CURRENT_PAGE, page.getCurrentPageNumber());
+        request.setAttribute(AttributesConstants.PAGINATION_PAGE_SIZE, page.getSize());
+    }
 }
