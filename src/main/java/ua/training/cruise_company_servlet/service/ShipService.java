@@ -19,6 +19,13 @@ public class ShipService {
     private final ExtraDao extraDao = DaoFactory.getInstance().createExtraDao();
     private final SeaportDao seaportDao = DaoFactory.getInstance().createSeaportDao();
 
+    public Ship getShipById(long id) throws NoEntityFoundException {
+        Ship ship = shipDao.findById(id).orElseThrow(() -> new NoEntityFoundException("There is no ship with provided id (" + id + ")"));
+        loadShipExtras(ship);
+        loadSeaportsOfShipRoute(ship);
+        return ship;
+    }
+
     public List<ShipDTO> getAllShips() {
         List<Ship> ships= shipDao.findAll();
         for(Ship s : ships){
