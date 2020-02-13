@@ -1,15 +1,15 @@
 package ua.training.cruise_company_servlet.web.command;
 
-import ua.training.cruise_company_servlet.web.constant.AttributesConstants;
-import ua.training.cruise_company_servlet.web.constant.PathConstants;
 import ua.training.cruise_company_servlet.enums.UserRole;
+import ua.training.cruise_company_servlet.web.authentication.Authentication;
+import ua.training.cruise_company_servlet.web.constant.PathConstants;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class ToMainPageCommand implements Command{
     @Override
     public String execute(HttpServletRequest request) {
-        UserRole curUserRole = (UserRole) request.getSession().getAttribute(AttributesConstants.USER_ROLE);
+        UserRole curUserRole = new Authentication(request.getSession()).getUserRole();
 
         if(curUserRole == null)
             return PathConstants.REDIRECT_PREFIX + PathConstants.INDEX_PAGE_COMMAND;

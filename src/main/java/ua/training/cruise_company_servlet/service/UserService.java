@@ -8,6 +8,8 @@ import ua.training.cruise_company_servlet.dao.DaoFactory;
 import ua.training.cruise_company_servlet.dao.UserDao;
 import ua.training.cruise_company_servlet.entity.User;
 import ua.training.cruise_company_servlet.enums.UserRole;
+import ua.training.cruise_company_servlet.web.dto.UserDTO;
+import ua.training.cruise_company_servlet.web.dto.converter.UserDTOConverter;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +19,7 @@ public class UserService {
 
     private final UserDao userDao = DaoFactory.getInstance().createUserDao();
 
-    public UserRole checkUserOnLogin(String login, String password) throws UserNotFoundException {
+    public UserDTO checkUserOnLogin(String login, String password) throws UserNotFoundException {
 
         Optional<User> userOptional = userDao.findByEmail(login);
 
@@ -33,7 +35,7 @@ public class UserService {
         // previously been hashed
         if (BCrypt.checkpw(password, userFromDB.getPassword())){
             LOG.info("password is correct");
-            return userFromDB.getRole();
+            return UserDTOConverter.convertToDTO(userFromDB);
         }
         else {
             LOG.error("entered password does not match the one from the DB");

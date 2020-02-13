@@ -1,8 +1,7 @@
 package ua.training.cruise_company_servlet.web.constant;
 
 public interface AttributesConstants {
-    String USER_ROLE = "user_role";
-    String USER_NAME = "user_name";
+    String USER = "session_user";
     String LOGGED_USERS = "logged_users";
 
     String LOGIN = "username";

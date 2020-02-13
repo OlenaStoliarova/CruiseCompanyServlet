@@ -6,6 +6,7 @@ import ua.training.cruise_company_servlet.web.constant.AttributesConstants;
 import ua.training.cruise_company_servlet.enums.UserRole;
 import ua.training.cruise_company_servlet.service.UserNotFoundException;
 import ua.training.cruise_company_servlet.service.UserService;
+import ua.training.cruise_company_servlet.web.dto.UserDTO;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
@@ -23,33 +24,50 @@ public class Authentication {
 
     public UserRole doLogin(String login, String password) throws UserNotFoundException, AlreadyLoggedInException {
         UserService userService = new UserService();
-        UserRole userRole = userService.checkUserOnLogin(login,password);
+        UserDTO user = userService.checkUserOnLogin(login,password);
 
         if( ! addUserToLoggedUsers(session.getServletContext(), login)){
             throw new AlreadyLoggedInException();
         }
-        session.setAttribute(AttributesConstants.USER_ROLE, userRole);
-        session.setAttribute(AttributesConstants.USER_NAME, login);
-        return userRole;
+
+        UserPrincipal userToStoreInSession = new UserPrincipal(user.getId(), user.getEmail(), user.getRole());
+        session.setAttribute(AttributesConstants.USER, userToStoreInSession);
+        return user.getRole();
     }
 
     public boolean isLoggedIn(){
-        return  ( session.getAttribute(AttributesConstants.USER_ROLE) != null ) &&
-                (session.getAttribute(AttributesConstants.USER_NAME) != null );
+        return  ( session.getAttribute(AttributesConstants.USER) != null );
     }
 
     public UserRole getUserRole(){
-        return (UserRole) session.getAttribute(AttributesConstants.USER_ROLE);
+        UserPrincipal userPrincipal = (UserPrincipal) session.getAttribute(AttributesConstants.USER);
+        if( userPrincipal != null) {
+            return userPrincipal.getRole();
+        }
+        return null;
     }
 
-    public String getUserName(){ return (String) session.getAttribute(AttributesConstants.USER_NAME);}
+    public String getUserName(){
+        UserPrincipal userPrincipal = (UserPrincipal) session.getAttribute(AttributesConstants.USER);
+        if( userPrincipal != null) {
+            return userPrincipal.getEmail();
+        }
+        return null;
+    }
 
+    public long getUserId(){
+        UserPrincipal userPrincipal = (UserPrincipal) session.getAttribute(AttributesConstants.USER);
+        if( userPrincipal != null) {
+            return userPrincipal.getId();
+        }
+        return 0;
+    }
 
     public void doLogout(){
-        String user = (String) session.getAttribute(AttributesConstants.USER_NAME);
-        removeUserFromLoggedUsers(session.getServletContext(), user);
-        session.removeAttribute(AttributesConstants.USER_NAME);
-        session.removeAttribute(AttributesConstants.USER_ROLE);
+        if(isLoggedIn()) {
+            removeUserFromLoggedUsers(session.getServletContext(), getUserName());
+            session.removeAttribute(AttributesConstants.USER);
+        }
     }
 
     private boolean addUserToLoggedUsers(ServletContext context, String login){
