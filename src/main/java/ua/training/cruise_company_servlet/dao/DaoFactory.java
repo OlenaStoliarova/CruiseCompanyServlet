@@ -11,6 +11,7 @@ public abstract class DaoFactory {
     public abstract ExtraDao createExtraDao();
     public abstract ShipDao createShipDao();
     public abstract CruiseDao createCruiseDao();
+    public abstract OrderDao createOrderDao();
 
     public static DaoFactory getInstance(){
         if( daoFactory == null ){

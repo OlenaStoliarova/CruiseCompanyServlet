@@ -32,4 +32,9 @@ public class JDBCDaoFactory extends DaoFactory {
     public CruiseDao createCruiseDao() {
         return new JDBCCruiseDao();
     }
+
+    @Override
+    public OrderDao createOrderDao() {
+        return new JDBCOrderDao();
+    }
 }

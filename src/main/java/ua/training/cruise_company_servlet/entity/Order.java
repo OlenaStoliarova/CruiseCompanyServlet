@@ -18,6 +18,11 @@ public class Order {
     private Set<Excursion> excursions = new HashSet<>();
     private Set<Extra> freeExtras = new HashSet<>();
 
+    public Order() {
+        user = new User();
+        cruise = new Cruise();
+    }
+
     public Long getId() {
         return id;
     }
