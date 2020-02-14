@@ -76,6 +76,40 @@ public class OrderService {
         return true;
     }
 
+    public boolean cancelBooking(long orderId) throws NoEntityFoundException {
+        Order orderFromDB = orderDao.findById(orderId)
+                .orElseThrow(() -> new NoEntityFoundException("There is no order with provided id (" + orderId + ")"));
+
+        orderFromDB.setStatus(OrderStatus.CANCELED);
+        Cruise cruise = new CruiseService().getCruiseById( orderFromDB.getCruise().getId());
+        cruise.setVacancies(cruise.getVacancies() + orderFromDB.getQuantity());
+
+        try {
+            TransactionManager.startTransaction();
+            cruiseDao.update(cruise);
+            orderDao.update(orderFromDB);
+            TransactionManager.commit();
+        } catch (DAOLevelException e) {
+            LOG.error("cruise booking wasn't cancelled ", e);
+            try {
+                TransactionManager.rollback();
+            } catch (DAOLevelException ex) {
+                LOG.error(ex.getMessage(), ex);
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean payForOrder(long orderId) throws NoEntityFoundException {
+        Order orderFromDB = orderDao.findById(orderId)
+                .orElseThrow(() -> new NoEntityFoundException("There is no order with provided id (" + orderId + ")"));
+
+        orderFromDB.setStatus(OrderStatus.PAID);
+        return orderDao.update(orderFromDB);
+    }
+
     private void loadUser(Order order) throws NoEntityFoundException {
         User user = new UserService().getUserById( order.getUser().getId());
         order.setUser(user);
