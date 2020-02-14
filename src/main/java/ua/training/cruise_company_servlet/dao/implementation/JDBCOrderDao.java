@@ -7,6 +7,7 @@ import ua.training.cruise_company_servlet.enums.OrderStatus;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +37,9 @@ public class JDBCOrderDao extends JDBCAbstractDao<Order> implements OrderDao {
             COLUMN_DATE + "=?, " + COLUMN_USER_ID + "=?, " + COLUMN_CRUISE_ID + "=?, " +
             COLUMN_QUANTITY + "=?, " + COLUMN_PRICE + "=?, " + COLUMN_STATUS + "=? " +
             "WHERE " + COLUMN_ID + "=?";
+
+    private static final String INSERT_ORDER_EXCURSIONS = "INSERT INTO order_excursion (order_id , excursion_id)" +
+                                                            " VALUES order_excursions_list";
 
     @Override
     public boolean create(Order entity) {
@@ -81,6 +85,22 @@ public class JDBCOrderDao extends JDBCAbstractDao<Order> implements OrderDao {
             preparedStatement.setLong(7, entity.getId());
         });
     }
+
+    @Override
+    public boolean addExcursionsToOrder(long orderId, List<Long> excursionsIds) {
+        String placeHolders = String.join(",", Collections.nCopies(excursionsIds.size(), "(?,?)"));
+        String queryWithCorrectInsertValues = INSERT_ORDER_EXCURSIONS.replaceAll("order_excursions_list", placeHolders);
+
+        return executeCUDQuery(queryWithCorrectInsertValues,
+                preparedStatement -> {
+                    for (int i = 0; i < excursionsIds.size(); i++) {
+                        preparedStatement.setLong(2*i + 1, orderId);
+                        preparedStatement.setLong(2*i + 2, excursionsIds.get(i));
+                    }
+                },
+                excursionsIds.size());
+    }
+
 
     private static class OrderMapper implements ObjectMapper<Order> {
         @Override

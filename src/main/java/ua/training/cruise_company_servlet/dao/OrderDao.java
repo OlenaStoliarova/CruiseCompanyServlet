@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface OrderDao extends GenericDao<Order> {
     List<Order> findByUserId(long userId);
+
+    boolean addExcursionsToOrder(long orderId, List<Long> excursionsIds);
 }

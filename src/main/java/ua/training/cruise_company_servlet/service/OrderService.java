@@ -6,6 +6,7 @@ import ua.training.cruise_company_servlet.dao.*;
 import ua.training.cruise_company_servlet.entity.*;
 import ua.training.cruise_company_servlet.enums.OrderStatus;
 import ua.training.cruise_company_servlet.persistence.TransactionManager;
+import ua.training.cruise_company_servlet.web.dto.ExcursionDTO;
 import ua.training.cruise_company_servlet.web.dto.OrderDTO;
 import ua.training.cruise_company_servlet.web.dto.converter.OrderDTOConverter;
 
@@ -102,13 +103,48 @@ public class OrderService {
         return true;
     }
 
-    public boolean payForOrder(long orderId) throws NoEntityFoundException {
-        Order orderFromDB = orderDao.findById(orderId)
+    public Order getOrderById(long orderId) throws NoEntityFoundException {
+        return orderDao.findById(orderId)
                 .orElseThrow(() -> new NoEntityFoundException("There is no order with provided id (" + orderId + ")"));
+    }
 
+    public boolean payForOrder(long orderId) throws NoEntityFoundException {
+        Order orderFromDB = getOrderById(orderId);
         orderFromDB.setStatus(OrderStatus.PAID);
         return orderDao.update(orderFromDB);
     }
+
+    public List<ExcursionDTO> getAllExcursionsForCruise(Long orderId) throws NoEntityFoundException {
+        Order order = getOrderById(orderId);
+        loadCruise(order);
+        List<Long> portIds = order.getCruise().getShip()
+                .getVisitingPorts().stream()
+                .map(Seaport::getId)
+                .collect(Collectors.toList());
+        return new ExcursionService().getAllExcursionBySeaportIds(portIds);
+    }
+
+    public boolean addExcursionsToOrder(long orderId, List<Long> chosenExcursions) throws NoEntityFoundException {
+        Order orderFromDB = getOrderById(orderId);
+        orderFromDB.setStatus(OrderStatus.EXCURSIONS_ADDED);
+
+        try {
+            TransactionManager.startTransaction();
+            orderDao.addExcursionsToOrder(orderId, chosenExcursions);
+            orderDao.update(orderFromDB);
+            TransactionManager.commit();
+        } catch (DAOLevelException e) {
+            LOG.error("chosen excursions weren't added to order ", e);
+            try {
+                TransactionManager.rollback();
+            } catch (DAOLevelException ex) {
+                LOG.error(ex.getMessage(), ex);
+            }
+            return false;
+        }
+        return true;
+    }
+
 
     private void loadUser(Order order) throws NoEntityFoundException {
         User user = new UserService().getUserById( order.getUser().getId());
