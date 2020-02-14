@@ -18,6 +18,8 @@
 <br/>
 <h2><fmt:message key="ui.travelagent.hello" /></h2>
 <br/><br/>
+<a href="${pageContext.request.contextPath}/app/travel_agent/orders"><fmt:message key="ui.agent.orders.view" /></a>
+<br/><br/>
 <a href="${pageContext.request.contextPath}/app/travel_agent/excursions"><fmt:message key="ui.excursions.view" /></a>
 
 
