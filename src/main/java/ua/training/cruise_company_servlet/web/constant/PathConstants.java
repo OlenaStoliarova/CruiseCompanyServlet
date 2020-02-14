@@ -23,6 +23,10 @@ public interface PathConstants {
 
     String TOURIST_CRUISES_COMMAND = "tourist/cruises";
     String TOURIST_CRUISES_JSP = "/WEB-INF/" + TOURIST_FOLDER + "/cruises.jsp";
+    String TOURIST_ORDER_CRUISE_COMMAND = "tourist/order/cruise";
+    String TOURIST_ORDER_CRUISE_JSP = "/WEB-INF/" + TOURIST_FOLDER + "/orderCruise.jsp";
+    String TOURIST_MANAGE_ORDERS_COMMAND = "tourist/my_orders";
+    String TOURIST_MANAGE_ORDERS_JSP = "/WEB-INF/" + TOURIST_FOLDER + "/myOrders.jsp";
 
     String ADMIN_MANAGE_USERS_COMMAND = "admin/users";
     String ADMIN_USERS_JSP = "/WEB-INF/" + ADMIN_FOLDER + "/users.jsp";

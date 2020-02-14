@@ -38,6 +38,16 @@ public class CruiseService {
         return getCruiseDTOPage(cruises, paginationSettings);
     }
 
+    public Cruise getCruiseById(long id) throws NoEntityFoundException {
+        Cruise cruise = cruiseDao.findById(id).orElseThrow(() -> new NoEntityFoundException("There is no cruise with provided id (" + id + ")"));
+        loadShip(cruise);
+        return cruise;
+    }
+
+    public CruiseDTO getCruiseDtoById(long id) throws NoEntityFoundException {
+        return CruiseDTOConverter.convertToDTO( getCruiseById(id));
+    }
+
     private void loadShip(Cruise cruise) throws NoEntityFoundException {
         Ship ship = new ShipService().getShipById(cruise.getShip().getId());
         cruise.setShip(ship);

@@ -63,7 +63,10 @@
                     <td><fmt:formatNumber value="${cruise.price}"/></td>
 
                     <td>
-                        <a href="${pageContext.request.contextPath}/app/tourist/order/cruise/${cruise.id}"><fmt:message key="ui.button.order"/></a>
+                        <form class="form-inline" action="${pageContext.request.contextPath}/app/tourist/order/cruise" method="get">
+                            <input type="hidden" id="cruiseId" name="cruiseId" value="${cruise.id}"/>
+                            <input type="submit" class="btn btn-link" value="<fmt:message key='ui.button.order'/>" />
+                        </form>
                     </td>
                 </tr>
             </c:forEach>

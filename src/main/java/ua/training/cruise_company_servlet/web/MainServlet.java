@@ -7,6 +7,8 @@ import ua.training.cruise_company_servlet.web.command.*;
 import ua.training.cruise_company_servlet.web.command.admin.*;
 import ua.training.cruise_company_servlet.web.command.tourist.TouristCruisesCommand;
 import ua.training.cruise_company_servlet.web.command.tourist.TouristMainPageCommand;
+import ua.training.cruise_company_servlet.web.command.tourist.TouristManageOrdersCommand;
+import ua.training.cruise_company_servlet.web.command.tourist.TouristOrderCruiseCommand;
 import ua.training.cruise_company_servlet.web.command.travel_agent.*;
 import ua.training.cruise_company_servlet.web.constant.PathConstants;
 
@@ -41,6 +43,8 @@ public class MainServlet extends HttpServlet {
         commands.put(PathConstants.TRAVEL_AGENT_DELETE_EXCURSION_COMMAND, new TravelAgentDeleteExcursionCommand());
         commands.put(PathConstants.TRAVEL_AGENT_EDIT_EXCURSION_COMMAND, new TravelAgentEditExcursionCommand());
         commands.put(PathConstants.ADMIN_MANAGE_SHIPS_COMMAND, new AdminManageShipsCommand());
+        commands.put(PathConstants.TOURIST_ORDER_CRUISE_COMMAND, new TouristOrderCruiseCommand());
+        commands.put(PathConstants.TOURIST_MANAGE_ORDERS_COMMAND, new TouristManageOrdersCommand());
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

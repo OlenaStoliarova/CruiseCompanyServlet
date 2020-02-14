@@ -18,6 +18,8 @@
 <h2><fmt:message key="ui.tourist.hello"/></h2>
 <br/>
 <a href="${pageContext.request.contextPath}/app/tourist/cruises"><fmt:message key="ui.cruises.view" /></a>
+<br/>
+<a href="${pageContext.request.contextPath}/app/tourist/my_orders"><fmt:message key="ui.user.orders.view" /></a>
 
 </body>
 </html>

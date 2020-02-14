@@ -38,4 +38,9 @@ public interface AttributesConstants {
     String ERROR_NO_EXCURSION_FOUND = "no_excursion_found";
 
     String ALL_CRUISES = "all_cruises";
+    String CRUISE_ID = "cruiseId";
+    String ERROR_NO_CRUISE_FOUND = "no_cruise_found";
+    String CRUISE_OBJECT = "cruise";
+    String CRUISE_ORDER_QUANTITY = "quantity";
+    String ERROR_BOOKING_CRUISE = "booking_error";
 }
