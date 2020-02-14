@@ -27,6 +27,10 @@ public class JDBCCruiseDao extends JDBCAbstractDao<Cruise> implements CruiseDao 
             " WHERE " + COLUMN_START_DATE + ">=? AND " + COLUMN_VACANCIES + ">0" +
             " ORDER BY " + COLUMN_START_DATE + " ASC";
 
+    private static final String UPDATE_CRUISE = "UPDATE " + TABLE + " SET " +
+            COLUMN_SHIP_ID + "=?, " + COLUMN_START_DATE + "=?, " +
+            COLUMN_VACANCIES + "=?, "  + COLUMN_PRICE + "=? " +
+            "WHERE " + COLUMN_ID + "=?";
 
     @Override
     public boolean create(Cruise entity) {
@@ -57,8 +61,13 @@ public class JDBCCruiseDao extends JDBCAbstractDao<Cruise> implements CruiseDao 
 
     @Override
     public boolean update(Cruise entity) {
-        //TODO: add ability to edit cruise
-        throw new UnsupportedOperationException("not implemented yet");
+        return executeCUDQuery(UPDATE_CRUISE, preparedStatement ->{
+            preparedStatement.setLong(1, entity.getShip().getId());
+            preparedStatement.setDate(2, Date.valueOf(entity.getStartingDate()));
+            preparedStatement.setInt(3, entity.getVacancies());
+            preparedStatement.setBigDecimal(4, entity.getPrice());
+            preparedStatement.setLong(5, entity.getId());
+        });
     }
 
     private static class CruiseMapper implements ObjectMapper<Cruise> {
