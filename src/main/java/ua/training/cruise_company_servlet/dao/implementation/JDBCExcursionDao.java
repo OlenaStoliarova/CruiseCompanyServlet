@@ -32,6 +32,13 @@ public class JDBCExcursionDao extends JDBCAbstractDao<Excursion> implements Excu
     private static final String SELECT_ALL_EXCURSIONS_IN_SEAPORT_ORDER_BY_NAME_EN = "SELECT * FROM " + TABLE +
                                                                                     " WHERE " + COLUMN_SEAPORT_ID + "=?" +
                                                                                     " ORDER BY " + COLUMN_NAME_EN + " ASC";
+
+    private static final String SELECT_ALL_EXCURSIONS_OF_ORDER = "SELECT e.* FROM " + TABLE + " AS e " +
+            "INNER JOIN order_excursion AS oe " +
+            "ON oe.excursion_id=e." + COLUMN_ID +
+            " WHERE oe.order_id=?" +
+            " ORDER BY " + COLUMN_NAME_EN;
+
     private static final String DELETE_EXCURSION_BY_ID = "DELETE FROM " + TABLE + " WHERE " + COLUMN_ID + "=?";
 
     private static final String UPDATE_EXCURSION = "UPDATE " + TABLE + " SET " +
@@ -71,6 +78,13 @@ public class JDBCExcursionDao extends JDBCAbstractDao<Excursion> implements Excu
                             preparedStatement -> {},
                             new ExcursionMapper(),
                             paginationSettings);
+    }
+
+    @Override
+    public List<Excursion> findAllByOrderId(long orderId) {
+        return selectMany(SELECT_ALL_EXCURSIONS_OF_ORDER,
+                preparedStatement -> preparedStatement.setLong(1, orderId),
+                new ExcursionMapper());
     }
 
     @Override

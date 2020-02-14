@@ -22,6 +22,13 @@ public class JDBCExtraDao extends JDBCAbstractDao<Extra> implements ExtraDao {
                                                             "ON se.extra_id=e." + COLUMN_ID +
                                                             " WHERE se.ship_id=?" +
                                                             " ORDER BY " + COLUMN_NAME_EN;
+
+    private static final String SELECT_ALL_EXTRAS_OF_ORDER = "SELECT e.* FROM " + TABLE + " AS e " +
+            "INNER JOIN order_extras AS oe " +
+            "ON oe.extra_id=e." + COLUMN_ID +
+            " WHERE oe.order_id=?" +
+            " ORDER BY " + COLUMN_NAME_EN;
+
     @Override
     public boolean create(Extra entity) {
         //TODO: add ability to add extras
@@ -50,6 +57,13 @@ public class JDBCExtraDao extends JDBCAbstractDao<Extra> implements ExtraDao {
         return selectMany(SELECT_ALL_EXTRAS_OF_SHIP,
                             preparedStatement -> preparedStatement.setLong(1, shipId),
                             new ExtraMapper());
+    }
+
+    @Override
+    public List<Extra> findAllByOrderId(long orderId) {
+        return selectMany(SELECT_ALL_EXTRAS_OF_ORDER,
+                preparedStatement -> preparedStatement.setLong(1, orderId),
+                new ExtraMapper());
     }
 
     @Override

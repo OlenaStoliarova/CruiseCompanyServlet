@@ -54,4 +54,9 @@ public class UserService {
             return false;
         }
     }
+
+    public User getUserById(long id) throws NoEntityFoundException {
+        return userDao.findById(id)
+                .orElseThrow(() -> new NoEntityFoundException("There is no user with provided id (" + id + ")"));
+    }
 }

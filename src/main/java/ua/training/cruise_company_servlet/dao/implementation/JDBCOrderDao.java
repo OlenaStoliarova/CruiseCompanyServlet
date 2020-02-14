@@ -27,6 +27,10 @@ public class JDBCOrderDao extends JDBCAbstractDao<Order> implements OrderDao {
     private static final String SELECT_ORDER_BY_ID = "SELECT * FROM " + TABLE + " WHERE " + COLUMN_ID + "=?";
     private static final String SELECT_ALL_ORDERS_ORDER_BY_CREATION_DATE = "SELECT * FROM " + TABLE +
                                                                             " ORDER BY " + COLUMN_DATE + " ASC";
+    private static final String SELECT_USER_ORDERS_ORDER_BY_CREATION_DATE =
+                    "SELECT * FROM " + TABLE +
+                    " WHERE " + COLUMN_USER_ID + "=?" +
+                    " ORDER BY " + COLUMN_DATE + " DESC";
 
     private static final String UPDATE_ORDER = "UPDATE " + TABLE + " SET " +
             COLUMN_DATE + "=?, " + COLUMN_USER_ID + "=?, " + COLUMN_CRUISE_ID + "=?, " +
@@ -49,6 +53,13 @@ public class JDBCOrderDao extends JDBCAbstractDao<Order> implements OrderDao {
     public Optional<Order> findById(long id) {
         return selectOne(SELECT_ORDER_BY_ID,
                 preparedStatement -> preparedStatement.setLong(1, id),
+                new OrderMapper());
+    }
+
+    @Override
+    public List<Order> findByUserId(long userId) {
+        return selectMany(SELECT_USER_ORDERS_ORDER_BY_CREATION_DATE,
+                preparedStatement -> preparedStatement.setLong(1, userId),
                 new OrderMapper());
     }
 
