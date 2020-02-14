@@ -13,5 +13,5 @@
 1. Clone project
 2. Run DBStructureAndData.sql from resources/DB folder
 3. Update DB login and password in src\main\webapp\META-INF\context.xml
-4. Compile and run jar 
+4. Compile and run war 
 5. Go to link http://localhost:8080/
