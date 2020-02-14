@@ -12,4 +12,6 @@ public interface ExcursionDao extends GenericDao<Excursion> {
     Page<Excursion> findBySeaportIdOrderByNameEn(long seaportId, PaginationSettings paginationSettings);
 
     List<Excursion> findAllByOrderId(long orderId);
+
+    List<Excursion> findAllBySeaportIds(List<Long> seaportIds);
 }

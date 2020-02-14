@@ -7,6 +7,7 @@ import ua.training.cruise_company_servlet.utility.PaginationSettings;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +39,10 @@ public class JDBCExcursionDao extends JDBCAbstractDao<Excursion> implements Excu
             "ON oe.excursion_id=e." + COLUMN_ID +
             " WHERE oe.order_id=?" +
             " ORDER BY " + COLUMN_NAME_EN;
+
+    private static final String SELECT_ALL_EXCURSIONS_BY_SEAPORT_IDS = "SELECT * FROM " + TABLE +
+            " WHERE " + COLUMN_SEAPORT_ID + " IN (seaport_ids_list)";
+
 
     private static final String DELETE_EXCURSION_BY_ID = "DELETE FROM " + TABLE + " WHERE " + COLUMN_ID + "=?";
 
@@ -93,6 +98,20 @@ public class JDBCExcursionDao extends JDBCAbstractDao<Excursion> implements Excu
                 preparedStatement -> preparedStatement.setLong(1, seaportId),
                 new ExcursionMapper(),
                 paginationSettings);
+    }
+
+    @Override
+    public List<Excursion> findAllBySeaportIds(List<Long> seaportIds) {
+        String placeHolders = String.join(",", Collections.nCopies(seaportIds.size(), "?"));
+        String queryWithCorrectWhereIn = SELECT_ALL_EXCURSIONS_BY_SEAPORT_IDS.replaceAll("seaport_ids_list", placeHolders);
+
+        return selectMany(queryWithCorrectWhereIn,
+                preparedStatement -> {
+                    for (int i = 0; i < seaportIds.size(); i++) {
+                        preparedStatement.setLong(i + 1, seaportIds.get(i));
+                    }
+                },
+                new ExcursionMapper());
     }
 
     @Override
