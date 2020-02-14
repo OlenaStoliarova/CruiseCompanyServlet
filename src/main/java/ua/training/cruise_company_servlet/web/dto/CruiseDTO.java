@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 public class CruiseDTO {
     private Long id;
     private String startingDate;
+    private String finishingDate;
     private ShipDTO ship;
     private BigDecimal price;
     private int vacancies;
@@ -23,6 +24,14 @@ public class CruiseDTO {
 
     public void setStartingDate(String startingDate) {
         this.startingDate = startingDate;
+    }
+
+    public String getFinishingDate() {
+        return finishingDate;
+    }
+
+    public void setFinishingDate(String finishingDate) {
+        this.finishingDate = finishingDate;
     }
 
     public ShipDTO getShip() {
@@ -53,7 +62,8 @@ public class CruiseDTO {
     public String toString() {
         return "CruiseDTO{" +
                 "id=" + id +
-                ", startingDate=" + startingDate +
+                ", startingDate='" + startingDate + '\'' +
+                ", finishingDate='" + finishingDate + '\'' +
                 ", ship=" + ship +
                 ", price=" + price +
                 ", vacancies=" + vacancies +
