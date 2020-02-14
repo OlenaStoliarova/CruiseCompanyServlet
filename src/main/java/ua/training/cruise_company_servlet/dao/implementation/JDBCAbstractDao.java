@@ -3,10 +3,15 @@ package ua.training.cruise_company_servlet.dao.implementation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.training.cruise_company_servlet.dao.DAOLevelException;
+import ua.training.cruise_company_servlet.persistence.ConnectionWrapper;
+import ua.training.cruise_company_servlet.persistence.TransactionManager;
 import ua.training.cruise_company_servlet.utility.Page;
 import ua.training.cruise_company_servlet.utility.PaginationSettings;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,9 +24,9 @@ public abstract class JDBCAbstractDao<T>{
     private static final String SELECT_COUNT = "SELECT COUNT(*) as total_elements ";
 
     protected boolean executeCUDQuery(String query, StatementMapper statementMapper) {
-        try(Connection connection = ConnectionPoolHolder.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
+        try (ConnectionWrapper connectionWrapper = TransactionManager.getConnection();
+             PreparedStatement preparedStatement = connectionWrapper.prepareStatement(query)) {
             statementMapper.map(preparedStatement);
 
             return 1 == preparedStatement.executeUpdate(); //one row was affected
@@ -37,8 +42,8 @@ public abstract class JDBCAbstractDao<T>{
     protected Optional<T> selectOne(String query, StatementMapper statementMapper, ObjectMapper<T> objectMapper) {
         Optional<T> foundEntity = Optional.empty();
 
-        try(Connection connection = ConnectionPoolHolder.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (ConnectionWrapper connectionWrapper = TransactionManager.getConnection();
+             PreparedStatement preparedStatement = connectionWrapper.prepareStatement(query)) {
 
             statementMapper.map(preparedStatement);
             try(ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -57,8 +62,8 @@ public abstract class JDBCAbstractDao<T>{
     protected List<T> selectMany(String query, StatementMapper statementMapper, ObjectMapper<T> objectMapper) {
         List<T> resultList = new ArrayList<>();
 
-        try (Connection connection = ConnectionPoolHolder.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (ConnectionWrapper connectionWrapper = TransactionManager.getConnection();
+             PreparedStatement preparedStatement = connectionWrapper.prepareStatement(query)) {
 
             statementMapper.map(preparedStatement);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -80,8 +85,8 @@ public abstract class JDBCAbstractDao<T>{
         long totalRowsInResultSet = 0;
         String countQuery = SELECT_COUNT + query.replaceFirst(".*FROM", "FROM");
         LOG.debug("executeQuery: " + countQuery);
-        try (Connection connection = ConnectionPoolHolder.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(countQuery)){
+        try (ConnectionWrapper connectionWrapper = TransactionManager.getConnection();
+             PreparedStatement preparedStatement = connectionWrapper.prepareStatement(countQuery)) {
 
             statementMapper.map(preparedStatement);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {

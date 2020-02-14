@@ -1,4 +1,4 @@
-package ua.training.cruise_company_servlet.dao.implementation;
+package ua.training.cruise_company_servlet.persistence;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
