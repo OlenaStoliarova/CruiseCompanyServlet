@@ -40,9 +40,9 @@ public class OrderDTOConverter {
                     excursionsStr.append(excursion.getNameUkr());
                 else
                     excursionsStr.append(excursion.getNameEn());
-                excursionsStr.append(", ");
+                excursionsStr.append(";\n");
             }
-            excursionsStr.replace( excursionsStr.lastIndexOf(","), excursionsStr.length(), "");
+            excursionsStr.replace( excursionsStr.lastIndexOf(";\n"), excursionsStr.length(), "");
 
             return excursionsStr.toString();
         } else if (order.getStatus().compareTo(OrderStatus.EXCURSIONS_ADDED) >= 0){
