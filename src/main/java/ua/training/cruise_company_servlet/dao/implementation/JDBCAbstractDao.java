@@ -24,12 +24,16 @@ public abstract class JDBCAbstractDao<T>{
     private static final String SELECT_COUNT = "SELECT COUNT(*) as total_elements ";
 
     protected boolean executeCUDQuery(String query, StatementMapper statementMapper) {
+       return executeCUDQuery(query, statementMapper, 1);
+    }
+
+    protected boolean executeCUDQuery(String query, StatementMapper statementMapper, int numberOfRows) {
 
         try (ConnectionWrapper connectionWrapper = TransactionManager.getConnection();
              PreparedStatement preparedStatement = connectionWrapper.prepareStatement(query)) {
             statementMapper.map(preparedStatement);
 
-            return 1 == preparedStatement.executeUpdate(); //one row was affected
+            return numberOfRows == preparedStatement.executeUpdate();
         }catch (SQLIntegrityConstraintViolationException ex){
             LOG.error(ex.getMessage(), ex);
             return false;
