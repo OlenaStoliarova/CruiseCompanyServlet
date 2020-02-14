@@ -43,4 +43,5 @@ public interface AttributesConstants {
     String CRUISE_OBJECT = "cruise";
     String CRUISE_ORDER_QUANTITY = "quantity";
     String ERROR_BOOKING_CRUISE = "booking_error";
+    String USER_ORDERS = "orders";
 }
