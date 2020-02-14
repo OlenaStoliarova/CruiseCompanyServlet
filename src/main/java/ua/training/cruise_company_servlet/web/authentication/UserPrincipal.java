@@ -2,7 +2,7 @@ package ua.training.cruise_company_servlet.web.authentication;
 
 import ua.training.cruise_company_servlet.enums.UserRole;
 
-class UserPrincipal{
+public class UserPrincipal{
     private Long id;
     private String email; //this is our login
     private UserRole role;
