@@ -7,25 +7,29 @@ import ua.training.cruise_company_servlet.service.OrderService;
 import ua.training.cruise_company_servlet.web.command.Command;
 import ua.training.cruise_company_servlet.web.constant.AttributesConstants;
 import ua.training.cruise_company_servlet.web.constant.PathConstants;
-import ua.training.cruise_company_servlet.web.dto.ExcursionDTO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class TouristOrderExcursionsCommand implements Command {
-    private static final Logger LOG = LogManager.getLogger(TouristOrderExcursionsCommand.class);
+public class TouristAddExcursionsToOrderCommand  implements Command {
+    private static final Logger LOG = LogManager.getLogger(TouristAddExcursionsToOrderCommand.class);
 
     @Override
     public String execute(HttpServletRequest request) {
         long orderId = Long.parseLong(request.getParameter(AttributesConstants.ORDER_ID));
+        String[] chosenExcursions = request.getParameterValues(AttributesConstants.CHOSEN_EXCURSIONS);
+        List<Long> excursions = Arrays.stream(chosenExcursions)
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
 
         OrderService orderService = new OrderService();
         try {
-            List<ExcursionDTO> excursionDTO = orderService.getAllExcursionsForCruise(orderId);
-            request.setAttribute(AttributesConstants.ORDER_EXCURSIONS, excursionDTO);
+            orderService.addExcursionsToOrder(orderId, excursions);
         } catch (NoEntityFoundException e) {
             LOG.error(e.getMessage(), e);
         }
-        return PathConstants.TOURIST_ORDER_EXCURSIONS_JSP;
+        return PathConstants.REDIRECT_PREFIX + PathConstants.SERVLET_PATH + PathConstants.TOURIST_MANAGE_ORDERS_COMMAND;
     }
 }

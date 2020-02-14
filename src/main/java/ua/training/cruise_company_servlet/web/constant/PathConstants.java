@@ -31,6 +31,7 @@ public interface PathConstants {
     String TOURIST_PAY_ORDER_COMMAND = "tourist/pay_order";
     String TOURIST_ORDER_EXCURSIONS_COMMAND = "tourist/order/excursions";
     String TOURIST_ORDER_EXCURSIONS_JSP = "/WEB-INF/" + TOURIST_FOLDER + "/orderExcursions.jsp";
+    String TOURIST_ADD_EXCURSIONS_TO_ORDER_COMMAND = "tourist/order/add_excursions";
 
     String ADMIN_MANAGE_USERS_COMMAND = "admin/users";
     String ADMIN_USERS_JSP = "/WEB-INF/" + ADMIN_FOLDER + "/users.jsp";

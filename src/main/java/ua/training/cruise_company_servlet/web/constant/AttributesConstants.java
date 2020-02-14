@@ -45,4 +45,6 @@ public interface AttributesConstants {
     String ERROR_BOOKING_CRUISE = "booking_error";
     String USER_ORDERS = "orders";
     String ORDER_ID = "orderId";
+    String ORDER_EXCURSIONS = "excursions";
+    String CHOSEN_EXCURSIONS = "chosenExcursions";
 }

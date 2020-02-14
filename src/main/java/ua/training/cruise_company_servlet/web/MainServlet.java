@@ -45,6 +45,7 @@ public class MainServlet extends HttpServlet {
         commands.put(PathConstants.TOURIST_CANCEL_ORDER_COMMAND, new TouristCancelOrderCommand());
         commands.put(PathConstants.TOURIST_PAY_ORDER_COMMAND, new TouristPayOrderCommand());
         commands.put(PathConstants.TOURIST_ORDER_EXCURSIONS_COMMAND, new TouristOrderExcursionsCommand());
+        commands.put(PathConstants.TOURIST_ADD_EXCURSIONS_TO_ORDER_COMMAND, new TouristAddExcursionsToOrderCommand());
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

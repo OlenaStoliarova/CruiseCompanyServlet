@@ -12,6 +12,48 @@
 <%@ include file="/WEB-INF/fragments/topMenu.jsp" %>
 
 <h2><fmt:message key="ui.cruise.excursions" /></h2>
+<div class="container-fluid">
+    <c:if test="${empty requestScope.excursions}">
+        <div class="text-success"><fmt:message key="ui.excursion.all.empty.list"/></div>
+    </c:if>
+
+    <form action="${pageContext.request.contextPath}/app/tourist/order/add_excursions" method="post">
+        <input type="hidden" name="orderId" value="${param.orderId}"/>
+        <fieldset>
+            <div class="table-responsive">
+                <table class="table table-condensed table-bordered table-hover">
+                    <thead>
+                    <tr class="table-primary">
+                        <th></th>
+                        <th><fmt:message key="ui.excursion.name" /></th>
+                        <th><fmt:message key="ui.excursion.description" /></th>
+                        <th><fmt:message key="ui.excursion.duration" /></th>
+                        <th><fmt:message key="ui.excursion.price" /></th>
+                        <th><fmt:message key="ui.excursion.port" /></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach var="excursion" items="${requestScope.excursions}">
+                        <tr>
+                            <td>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" id="chosenExcursions" name="chosenExcursions" value="${excursion.id}">
+                                </div>
+                            </td>
+                            <td><c:out value="${excursion.name}"/></td>
+                            <td><c:out value="${excursion.description}"/></td>
+                            <td><c:out value="${excursion.approximateDurationHr}"/></td>
+                            <td><c:out value="${excursion.price}"/></td>
+                            <td><c:out value="${excursion.seaport.name} (${excursion.seaport.country})"/></td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </fieldset>
+        <input type="submit" class="btn btn-success" value="<fmt:message key='ui.cruise.add.excursions'/>" />
+    </form>
+</div>
 
 </body>
 </html>

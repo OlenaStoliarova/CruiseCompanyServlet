@@ -51,7 +51,7 @@
                                 <input type="submit" class="btn btn-success" value="<fmt:message key='ui.button.add'/>" />
                              </form>
                         </c:if>
-                        <span><c:out value="${order.addedExcursions}"/></span>
+                        <span style="white-space:pre"><c:out value="${order.addedExcursions}"/></span>
                     </td>
                     <td>
                         <c:if test="${order.status == 'CANCELED'}">
