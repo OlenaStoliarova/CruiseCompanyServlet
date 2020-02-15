@@ -11,6 +11,10 @@ public class CruiseDTOConverter {
     public static CruiseDTO convertToDTO(Cruise cruise) {
         CruiseDTO dto = new CruiseDTO();
 
+        if(cruise == null){
+            return dto;
+        }
+
         dto.setId( cruise.getId() );
         dto.setStartingDate( LocalizationHelper.getDateInLocaleFormat(cruise.getStartingDate()) );
         dto.setFinishingDate( LocalizationHelper.getDateInLocaleFormat(calculateFinishingDate(cruise)));
@@ -22,7 +26,11 @@ public class CruiseDTOConverter {
     }
 
     private static LocalDate calculateFinishingDate(Cruise cruise){
-        long tripDuration = cruise.getShip().getOneTripDurationDays();
-        return cruise.getStartingDate().plusDays(tripDuration);
+        try {
+            long tripDuration = cruise.getShip().getOneTripDurationDays();
+            return cruise.getStartingDate().plusDays(tripDuration);
+        } catch (NullPointerException ignored){
+            return null;
+        }
     }
 }

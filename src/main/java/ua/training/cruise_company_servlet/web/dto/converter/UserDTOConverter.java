@@ -8,6 +8,10 @@ public class UserDTOConverter {
     public static UserDTO convertToDTO(User user) {
         UserDTO dto = new UserDTO();
 
+        if(user == null){
+            return dto;
+        }
+
         dto.setId( user.getId() );
         dto.setEmail( user.getEmail());
         dto.setFirstNameEn( user.getFirstNameEn() );

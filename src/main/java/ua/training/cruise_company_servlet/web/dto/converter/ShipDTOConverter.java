@@ -14,6 +14,10 @@ public class ShipDTOConverter {
     public static ShipDTO convertToDTO(Ship ship) {
         ShipDTO dto = new ShipDTO();
 
+        if(ship == null){
+            return dto;
+        }
+
         dto.setId( ship.getId() );
         dto.setName( ship.getName() );
         dto.setCapacity( ship.getCapacity() );
@@ -21,15 +25,19 @@ public class ShipDTOConverter {
 
         setLocaleSpecificFields(dto, ship);
 
-        List<ExtraDTO> extras = ship.getExtras().stream()
-                .map(ExtraDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
-        dto.setExtras( extras );
+        if(ship.getExtras() != null) {
+            List<ExtraDTO> extras = ship.getExtras().stream()
+                    .map(ExtraDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+            dto.setExtras(extras);
+        }
 
-        List<SeaportDTO> seaports = ship.getVisitingPorts().stream()
-                .map(SeaportDTOConverter::convertToDTO)
-                .collect(Collectors.toList());
-        dto.setVisitingPorts( seaports );
+        if(ship.getVisitingPorts() != null) {
+            List<SeaportDTO> seaports = ship.getVisitingPorts().stream()
+                    .map(SeaportDTOConverter::convertToDTO)
+                    .collect(Collectors.toList());
+            dto.setVisitingPorts(seaports);
+        }
 
         return dto;
     }

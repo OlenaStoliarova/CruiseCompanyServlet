@@ -27,6 +27,10 @@ public class ExcursionDTOConverter {
     public static ExcursionDTO convertToDTO(Excursion excursion) {
         ExcursionDTO dto = new ExcursionDTO();
 
+        if(excursion == null){
+            return dto;
+        }
+
         dto.setId( excursion.getId() );
         setLocaleSpecificFields(dto, excursion);
         dto.setApproximateDurationHr( excursion.getApproximateDurationHr() );

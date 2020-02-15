@@ -15,6 +15,10 @@ public class OrderDTOConverter {
     public static OrderDTO convertToDTO(Order order) {
         OrderDTO dto = new OrderDTO();
 
+        if(order == null){
+            return dto;
+        }
+
         dto.setId( order.getId() );
         dto.setCreationDate( LocalizationHelper.getDateInLocaleFormat(order.getCreationDate()) );
         dto.setUser( UserDTOConverter.convertToDTO( order.getUser() ));
@@ -32,7 +36,7 @@ public class OrderDTOConverter {
         Locale currentLocale = Locale.getDefault();
         String lang = currentLocale.getLanguage();
 
-        if( !order.getExcursions().isEmpty()){
+        if( (order.getExcursions() != null) && (!order.getExcursions().isEmpty())){
             Set<Excursion> excursions = order.getExcursions();
             StringBuilder excursionsStr = new StringBuilder();
             for( Excursion excursion: excursions){
@@ -45,9 +49,14 @@ public class OrderDTOConverter {
             excursionsStr.replace( excursionsStr.lastIndexOf(";\n"), excursionsStr.length(), "");
 
             return excursionsStr.toString();
-        } else if (order.getStatus().compareTo(OrderStatus.EXCURSIONS_ADDED) >= 0){
-            return "-";
         }
+
+        try {
+            if ( order.getStatus().compareTo(OrderStatus.EXCURSIONS_ADDED) >= 0) {
+                return "-";
+            }
+        } catch (NullPointerException ignored){}
+
         return "";
     }
 
@@ -55,7 +64,7 @@ public class OrderDTOConverter {
         Locale currentLocale = Locale.getDefault();
         String lang = currentLocale.getLanguage();
 
-        if (!order.getFreeExtras().isEmpty()) {
+        if ( (order.getFreeExtras() != null) && (!order.getFreeExtras().isEmpty())) {
             Set<Extra> extras = order.getFreeExtras();
             StringBuilder extrasStr = new StringBuilder();
             for (Extra bonus : extras) {
@@ -68,9 +77,12 @@ public class OrderDTOConverter {
             extrasStr.replace(extrasStr.lastIndexOf(","), extrasStr.length(), "");
 
             return extrasStr.toString();
-        } else if (order.getStatus() == OrderStatus.EXTRAS_ADDED) {
+        }
+
+        if (order.getStatus() == OrderStatus.EXTRAS_ADDED) {
             return "-";
         }
+
         return "";
     }
 }
