@@ -8,7 +8,7 @@ import ua.training.cruise_company_servlet.utility.PaginationSettings;
 import ua.training.cruise_company_servlet.web.command.Command;
 import ua.training.cruise_company_servlet.web.constant.AttributesConstants;
 import ua.training.cruise_company_servlet.web.constant.PathConstants;
-import ua.training.cruise_company_servlet.web.dto.ExcursionForTravelAgentDTO;
+import ua.training.cruise_company_servlet.web.dto.ExcursionDTO;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,7 +20,7 @@ public class TravelAgentManageExcursionsCommand implements Command {
         request.setAttribute(AttributesConstants.ALL_SEAPORTS, seaportService.getAllSeaportsLocalizedSorted());
 
         PaginationSettings paginationSettings = PaginationHelper.getPaginationSettings(request);
-        Page<ExcursionForTravelAgentDTO> page;
+        Page<ExcursionDTO> page;
 
         String strSeaportId = request.getParameter(AttributesConstants.EXCURSION_PORT);
         if(strSeaportId != null){

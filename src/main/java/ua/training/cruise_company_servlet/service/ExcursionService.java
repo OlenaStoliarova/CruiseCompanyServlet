@@ -10,7 +10,6 @@ import ua.training.cruise_company_servlet.entity.Seaport;
 import ua.training.cruise_company_servlet.utility.Page;
 import ua.training.cruise_company_servlet.utility.PaginationSettings;
 import ua.training.cruise_company_servlet.web.dto.ExcursionDTO;
-import ua.training.cruise_company_servlet.web.dto.ExcursionForTravelAgentDTO;
 import ua.training.cruise_company_servlet.web.dto.converter.ExcursionDTOConverter;
 import ua.training.cruise_company_servlet.web.form.ExcursionForm;
 
@@ -40,14 +39,14 @@ public class ExcursionService {
         }
     }
 
-    public Page<ExcursionForTravelAgentDTO> getAllExcursionsForTravelAgent(PaginationSettings paginationSettings) {
+    public Page<ExcursionDTO> getAllExcursionsForTravelAgent(PaginationSettings paginationSettings) {
         Page<Excursion> excursions = excursionDao.findAllOrderByPrice(paginationSettings);
-        return getExcursionForTravelAgentDTOPage(excursions, paginationSettings);
+        return getExcursionDTOPage(excursions, paginationSettings);
     }
 
-    public Page<ExcursionForTravelAgentDTO> getAllExcursionsForTravelAgent(long seaportId, PaginationSettings paginationSettings) {
+    public Page<ExcursionDTO> getAllExcursionsForTravelAgent(long seaportId, PaginationSettings paginationSettings) {
         Page<Excursion> excursions = excursionDao.findBySeaportIdOrderByNameEn(seaportId,paginationSettings);
-        return getExcursionForTravelAgentDTOPage(excursions, paginationSettings);
+        return getExcursionDTOPage(excursions, paginationSettings);
     }
 
     public boolean deleteExcursion(Long id){
@@ -111,13 +110,13 @@ public class ExcursionService {
         excursion.setSeaport(seaport);
     }
 
-    private Page<ExcursionForTravelAgentDTO> getExcursionForTravelAgentDTOPage(Page<Excursion> excursionsPage, PaginationSettings paginationSettings){
+    private Page<ExcursionDTO> getExcursionDTOPage(Page<Excursion> excursionsPage, PaginationSettings paginationSettings){
         List<Excursion> excursions = excursionsPage.getContent();
         for( Excursion excursion : excursions){
             loadSeaport(excursion);
         }
-        List<ExcursionForTravelAgentDTO> contentDTO = excursionsPage.getContent().stream()
-                .map(ExcursionDTOConverter::convertToDTOForTravelAgent)
+        List<ExcursionDTO> contentDTO = excursionsPage.getContent().stream()
+                .map(ExcursionDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
         return new Page<>(contentDTO, paginationSettings, excursionsPage.getTotalElements());
     }

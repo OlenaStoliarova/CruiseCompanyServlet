@@ -15,7 +15,7 @@
 <div class="container-fluid">
     <div class="row">
         <form class="col-6 form-inline" method="get">
-            <span><fmt:message key="ui.seaport"/></span>
+            <label for="seaportId"><fmt:message key="ui.seaport"/></label>
             <select class="form-control" id="seaportId" name="seaportId" required>
                 <option hidden disabled selected value>-</option>
                 <c:forEach var="seaport" items="${requestScope.all_seaports}">
@@ -48,10 +48,8 @@
             <thead>
             <tr class="table-primary">
                 <th>id</th>
-                <th><fmt:message key="ui.excursion.name.en"/></th>
-                <th><fmt:message key="ui.excursion.name.ukr"/></th>
-                <th><fmt:message key="ui.excursion.description.en"/></th>
-                <th><fmt:message key="ui.excursion.description.ukr"/></th>
+                <th><fmt:message key="ui.excursion.name"/></th>
+                <th><fmt:message key="ui.excursion.description"/></th>
                 <th><fmt:message key="ui.excursion.duration"/></th>
                 <th><fmt:message key="ui.excursion.price"/></th>
                 <th><fmt:message key="ui.seaport"/></th>
@@ -62,10 +60,8 @@
             <c:forEach var="excursion" items="${requestScope.all_excursions}">
                 <tr>
                     <td><c:out value="${excursion.id}"/></td>
-                    <td><c:out value="${excursion.nameEn}"/></td>
-                    <td><c:out value="${excursion.nameUkr}"/></td>
-                    <td><c:out value="${excursion.descriptionEn}"/></td>
-                    <td><c:out value="${excursion.descriptionUkr}"/></td>
+                    <td><c:out value="${excursion.name}"/></td>
+                    <td><c:out value="${excursion.description}"/></td>
                     <td><c:out value="${excursion.approximateDurationHr}"/></td>
                     <td><fmt:formatNumber value="${excursion.price}"/></td>
                     <td><c:out value="${excursion.seaport.name} (${excursion.seaport.country})"/></td>
