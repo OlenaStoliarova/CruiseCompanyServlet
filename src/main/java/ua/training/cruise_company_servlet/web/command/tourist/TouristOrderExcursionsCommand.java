@@ -21,7 +21,7 @@ public class TouristOrderExcursionsCommand implements Command {
 
         OrderService orderService = new OrderService();
         try {
-            List<ExcursionDTO> excursionDTO = orderService.getAllExcursionsForCruise(orderId);
+            List<ExcursionDTO> excursionDTO = orderService.getAllExcursionsForOrderCruise(orderId);
             request.setAttribute(AttributesConstants.ORDER_EXCURSIONS, excursionDTO);
         } catch (NoEntityFoundException e) {
             LOG.error(e.getMessage(), e);

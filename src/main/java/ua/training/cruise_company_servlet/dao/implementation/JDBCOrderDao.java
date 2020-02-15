@@ -3,6 +3,8 @@ package ua.training.cruise_company_servlet.dao.implementation;
 import ua.training.cruise_company_servlet.dao.OrderDao;
 import ua.training.cruise_company_servlet.entity.Order;
 import ua.training.cruise_company_servlet.enums.OrderStatus;
+import ua.training.cruise_company_servlet.utility.Page;
+import ua.training.cruise_company_servlet.utility.PaginationSettings;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -27,7 +29,7 @@ public class JDBCOrderDao extends JDBCAbstractDao<Order> implements OrderDao {
 
     private static final String SELECT_ORDER_BY_ID = "SELECT * FROM " + TABLE + " WHERE " + COLUMN_ID + "=?";
     private static final String SELECT_ALL_ORDERS_ORDER_BY_CREATION_DATE = "SELECT * FROM " + TABLE +
-                                                                            " ORDER BY " + COLUMN_DATE + " ASC";
+                                                                            " ORDER BY " + COLUMN_DATE + " DESC";
     private static final String SELECT_USER_ORDERS_ORDER_BY_CREATION_DATE =
                     "SELECT * FROM " + TABLE +
                     " WHERE " + COLUMN_USER_ID + "=?" +
@@ -40,6 +42,9 @@ public class JDBCOrderDao extends JDBCAbstractDao<Order> implements OrderDao {
 
     private static final String INSERT_ORDER_EXCURSIONS = "INSERT INTO order_excursion (order_id , excursion_id)" +
                                                             " VALUES order_excursions_list";
+
+    private static final String INSERT_ORDER_EXTRAS = "INSERT INTO order_extras (order_id , extra_id)" +
+            " VALUES order_extras_list";
 
     @Override
     public boolean create(Order entity) {
@@ -74,6 +79,14 @@ public class JDBCOrderDao extends JDBCAbstractDao<Order> implements OrderDao {
     }
 
     @Override
+    public Page<Order> findAll(PaginationSettings paginationSettings) {
+        return selectMany(SELECT_ALL_ORDERS_ORDER_BY_CREATION_DATE,
+                preparedStatement -> {},
+                new OrderMapper(),
+                paginationSettings);
+    }
+
+    @Override
     public boolean update(Order entity) {
         return executeCUDQuery(UPDATE_ORDER, preparedStatement ->{
             preparedStatement.setDate(1, Date.valueOf(entity.getCreationDate()));
@@ -90,15 +103,25 @@ public class JDBCOrderDao extends JDBCAbstractDao<Order> implements OrderDao {
     public boolean addExcursionsToOrder(long orderId, List<Long> excursionsIds) {
         String placeHolders = String.join(",", Collections.nCopies(excursionsIds.size(), "(?,?)"));
         String queryWithCorrectInsertValues = INSERT_ORDER_EXCURSIONS.replaceAll("order_excursions_list", placeHolders);
+        return insertManyToManyDependency(orderId, excursionsIds, queryWithCorrectInsertValues);
+    }
 
-        return executeCUDQuery(queryWithCorrectInsertValues,
+    @Override
+    public boolean addExtrasToOrder(long orderId, List<Long> extrasIds) {
+        String placeHolders = String.join(",", Collections.nCopies(extrasIds.size(), "(?,?)"));
+        String queryWithCorrectInsertValues = INSERT_ORDER_EXTRAS.replaceAll("order_extras_list", placeHolders);
+        return insertManyToManyDependency(orderId, extrasIds, queryWithCorrectInsertValues);
+    }
+
+    private boolean insertManyToManyDependency(long orderId, List<Long> dependencyIds, String insertQuery) {
+        return executeCUDQuery(insertQuery,
                 preparedStatement -> {
-                    for (int i = 0; i < excursionsIds.size(); i++) {
+                    for (int i = 0; i < dependencyIds.size(); i++) {
                         preparedStatement.setLong(2*i + 1, orderId);
-                        preparedStatement.setLong(2*i + 2, excursionsIds.get(i));
+                        preparedStatement.setLong(2*i + 2, dependencyIds.get(i));
                     }
                 },
-                excursionsIds.size());
+                dependencyIds.size());
     }
 
 

@@ -17,7 +17,7 @@ public class TouristManageOrdersCommand implements Command {
 
         OrderService orderService = new OrderService();
         List<OrderDTO> userOrders = orderService.allOrdersOfUser(userId);
-        request.setAttribute(AttributesConstants.USER_ORDERS, userOrders);
+        request.setAttribute(AttributesConstants.ORDERS, userOrders);
         return PathConstants.TOURIST_MANAGE_ORDERS_JSP;
     }
 }

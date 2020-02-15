@@ -6,8 +6,12 @@ import ua.training.cruise_company_servlet.dao.*;
 import ua.training.cruise_company_servlet.entity.*;
 import ua.training.cruise_company_servlet.enums.OrderStatus;
 import ua.training.cruise_company_servlet.persistence.TransactionManager;
+import ua.training.cruise_company_servlet.utility.Page;
+import ua.training.cruise_company_servlet.utility.PaginationSettings;
 import ua.training.cruise_company_servlet.web.dto.ExcursionDTO;
+import ua.training.cruise_company_servlet.web.dto.ExtraDTO;
 import ua.training.cruise_company_servlet.web.dto.OrderDTO;
+import ua.training.cruise_company_servlet.web.dto.converter.ExtraDTOConverter;
 import ua.training.cruise_company_servlet.web.dto.converter.OrderDTOConverter;
 
 import java.math.BigDecimal;
@@ -25,25 +29,21 @@ public class OrderService {
 
     public List<OrderDTO> allOrdersOfUser(Long userId) {
         List<Order> userOrders = orderDao.findByUserId(userId);
-
-        Iterator<Order> iterator = userOrders.iterator();
-        while (iterator.hasNext()) {
-            Order order = iterator.next();
-            try{
-                loadUser(order);
-                loadCruise(order);
-            } catch (NoEntityFoundException ex){
-                LOG.debug(ex.getMessage(), ex);
-                iterator.remove();
-            }
-            loadOrderExtras(order);
-            loadOrderExcursions(order);
-        }
-
-
+        eagerLoadOrders(userOrders);
         return userOrders.stream()
                 .map(OrderDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public Page<OrderDTO> getAllOrders(PaginationSettings paginationSettings) {
+        Page<Order> ordersPage = orderDao.findAll(paginationSettings);
+        eagerLoadOrders(ordersPage.getContent());
+
+        List<OrderDTO> contentDTO = ordersPage.getContent().stream()
+                .map(OrderDTOConverter::convertToDTO)
+                .collect(Collectors.toList());
+
+        return new Page<>(contentDTO, paginationSettings, ordersPage.getTotalElements());
     }
 
     public boolean bookCruise(Long userId, Long cruiseId, int quantity) throws NoEntityFoundException {
@@ -103,19 +103,32 @@ public class OrderService {
         return true;
     }
 
-    public Order getOrderById(long orderId) throws NoEntityFoundException {
-        return orderDao.findById(orderId)
+    public Order getOrderById(long orderId, boolean isEagerLoad) throws NoEntityFoundException {
+        Order order = orderDao.findById(orderId)
                 .orElseThrow(() -> new NoEntityFoundException("There is no order with provided id (" + orderId + ")"));
+
+        if(isEagerLoad) {
+            loadUser(order);
+            loadCruise(order);
+            loadOrderExtras(order);
+            loadOrderExcursions(order);
+        }
+
+        return order;
+    }
+
+    public OrderDTO getOrderDtoById(long orderId, boolean isEagerLoad) throws NoEntityFoundException {
+        return OrderDTOConverter.convertToDTO( getOrderById(orderId, isEagerLoad));
     }
 
     public boolean payForOrder(long orderId) throws NoEntityFoundException {
-        Order orderFromDB = getOrderById(orderId);
+        Order orderFromDB = getOrderById(orderId, false);
         orderFromDB.setStatus(OrderStatus.PAID);
         return orderDao.update(orderFromDB);
     }
 
-    public List<ExcursionDTO> getAllExcursionsForCruise(Long orderId) throws NoEntityFoundException {
-        Order order = getOrderById(orderId);
+    public List<ExcursionDTO> getAllExcursionsForOrderCruise(Long orderId) throws NoEntityFoundException {
+        Order order = getOrderById(orderId, false);
         loadCruise(order);
         List<Long> portIds = order.getCruise().getShip()
                 .getVisitingPorts().stream()
@@ -125,7 +138,7 @@ public class OrderService {
     }
 
     public boolean addExcursionsToOrder(long orderId, List<Long> chosenExcursions) throws NoEntityFoundException {
-        Order orderFromDB = getOrderById(orderId);
+        Order orderFromDB = getOrderById(orderId, false);
         orderFromDB.setStatus(OrderStatus.EXCURSIONS_ADDED);
 
         try {
@@ -145,6 +158,35 @@ public class OrderService {
         return true;
     }
 
+    public List<ExtraDTO> getAllExtrasForOrderCruise(Long orderId) throws NoEntityFoundException {
+        Order order = getOrderById(orderId, false);
+        loadCruise(order);
+        return order.getCruise().getShip().getExtras().stream()
+                .map(ExtraDTOConverter::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public boolean addExtrasToOrder(long orderId, List<Long> chosenExtras) throws NoEntityFoundException {
+        Order orderFromDB = getOrderById(orderId, false);
+        orderFromDB.setStatus(OrderStatus.EXTRAS_ADDED);
+
+        try {
+            TransactionManager.startTransaction();
+            orderDao.addExtrasToOrder(orderId, chosenExtras);
+            orderDao.update(orderFromDB);
+            TransactionManager.commit();
+        } catch (DAOLevelException e) {
+            LOG.error("chosen extras weren't added to order ", e);
+            try {
+                TransactionManager.rollback();
+            } catch (DAOLevelException ex) {
+                LOG.error(ex.getMessage(), ex);
+            }
+            return false;
+        }
+        return true;
+    }
+
 
     private void loadUser(Order order) throws NoEntityFoundException {
         User user = new UserService().getUserById( order.getUser().getId());
@@ -152,7 +194,7 @@ public class OrderService {
     }
 
     private void loadCruise(Order order) throws NoEntityFoundException {
-        Cruise cruise = new CruiseService().getCruiseById( order.getCruise(). getId());
+        Cruise cruise = new CruiseService().getCruiseById( order.getCruise().getId());
         order.setCruise( cruise);
     }
 
@@ -166,5 +208,21 @@ public class OrderService {
         ExcursionDao excursionDao = DaoFactory.getInstance().createExcursionDao();
         List<Excursion> addedExcursions = excursionDao.findAllByOrderId(order.getId());
         order.setExcursions(new HashSet<>(addedExcursions));
+    }
+
+    private void eagerLoadOrders(List<Order> orders){
+        Iterator<Order> iterator = orders.iterator();
+        while (iterator.hasNext()) {
+            Order order = iterator.next();
+            try{
+                loadUser(order);
+                loadCruise(order);
+            } catch (NoEntityFoundException ex){
+                LOG.debug(ex.getMessage(), ex);
+                iterator.remove();
+            }
+            loadOrderExtras(order);
+            loadOrderExcursions(order);
+        }
     }
 }

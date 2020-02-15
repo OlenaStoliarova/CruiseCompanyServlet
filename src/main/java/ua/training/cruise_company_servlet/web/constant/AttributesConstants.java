@@ -43,8 +43,12 @@ public interface AttributesConstants {
     String CRUISE_OBJECT = "cruise";
     String CRUISE_ORDER_QUANTITY = "quantity";
     String ERROR_BOOKING_CRUISE = "booking_error";
-    String USER_ORDERS = "orders";
+    String ORDERS = "orders";
     String ORDER_ID = "orderId";
     String ORDER_EXCURSIONS = "excursions";
     String CHOSEN_EXCURSIONS = "chosenExcursions";
+    String ORDER_OBJECT = "order";
+    String BONUSES = "bonuses";
+    String ERROR_NO_ORDER_FOUND = "no_order_found";
+    String CHOSEN_BONUSES = "chosenBonuses";
 }

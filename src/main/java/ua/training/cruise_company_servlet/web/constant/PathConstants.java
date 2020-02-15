@@ -54,4 +54,6 @@ public interface PathConstants {
 
     String TRAVEL_AGENT_MANAGE_ORDERS_COMMAND = "travel_agent/orders";
     String TRAVEL_AGENT_MANAGE_ORDERS_JSP = "/WEB-INF/" + TRAVEL_AGENT_FOLDER + "/orders.jsp";
+    String TRAVEL_AGENT_ADD_EXTRAS_TO_ORDER_COMMAND = "travel_agent/order/add_bonuses";
+    String TRAVEL_AGENT_ADD_EXTRAS_TO_ORDER_JSP = "/WEB-INF/" + TRAVEL_AGENT_FOLDER + "/addExtrasToOrder.jsp";
 }
