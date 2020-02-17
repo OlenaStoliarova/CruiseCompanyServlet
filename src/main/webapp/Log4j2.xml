@@ -6,7 +6,7 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="ua.training.cruise_company_servlet" level="info" additivity="false">
+        <Logger name="ua.cruise.company" level="info" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
         <Root level="all">
