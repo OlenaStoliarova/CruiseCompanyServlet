@@ -1,7 +1,7 @@
 package ua.training.cruise_company_servlet.web.command;
 
-import ua.training.cruise_company_servlet.service.NoEntityFoundException;
-import ua.training.cruise_company_servlet.service.NonUniqueObjectException;
+import ua.training.cruise_company_servlet.service.exception.NoEntityFoundException;
+import ua.training.cruise_company_servlet.service.exception.NonUniqueObjectException;
 import ua.training.cruise_company_servlet.service.UserService;
 import ua.training.cruise_company_servlet.web.constant.AttributesConstants;
 import ua.training.cruise_company_servlet.web.constant.PathConstants;

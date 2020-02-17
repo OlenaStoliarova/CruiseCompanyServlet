@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.training.cruise_company_servlet.web.constant.AttributesConstants;
 import ua.training.cruise_company_servlet.enums.UserRole;
-import ua.training.cruise_company_servlet.service.UserNotFoundException;
+import ua.training.cruise_company_servlet.service.exception.UserNotFoundException;
 import ua.training.cruise_company_servlet.service.UserService;
 import ua.training.cruise_company_servlet.web.dto.UserDTO;
 

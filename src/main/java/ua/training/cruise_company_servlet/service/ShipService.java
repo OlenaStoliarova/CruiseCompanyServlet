@@ -7,6 +7,7 @@ import ua.training.cruise_company_servlet.dao.ShipDao;
 import ua.training.cruise_company_servlet.entity.Extra;
 import ua.training.cruise_company_servlet.entity.Seaport;
 import ua.training.cruise_company_servlet.entity.Ship;
+import ua.training.cruise_company_servlet.service.exception.NoEntityFoundException;
 import ua.training.cruise_company_servlet.web.dto.ShipDTO;
 import ua.training.cruise_company_servlet.web.dto.converter.ShipDTOConverter;
 

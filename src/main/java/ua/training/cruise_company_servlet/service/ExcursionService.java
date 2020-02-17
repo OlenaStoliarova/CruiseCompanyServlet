@@ -7,6 +7,8 @@ import ua.training.cruise_company_servlet.dao.ExcursionDao;
 import ua.training.cruise_company_servlet.dao.SeaportDao;
 import ua.training.cruise_company_servlet.entity.Excursion;
 import ua.training.cruise_company_servlet.entity.Seaport;
+import ua.training.cruise_company_servlet.service.exception.NoEntityFoundException;
+import ua.training.cruise_company_servlet.service.exception.NonUniqueObjectException;
 import ua.training.cruise_company_servlet.utility.Page;
 import ua.training.cruise_company_servlet.utility.PaginationSettings;
 import ua.training.cruise_company_servlet.web.dto.ExcursionDTO;

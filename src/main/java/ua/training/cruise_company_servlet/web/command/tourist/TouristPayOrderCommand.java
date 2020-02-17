@@ -2,10 +2,10 @@ package ua.training.cruise_company_servlet.web.command.tourist;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.training.cruise_company_servlet.service.IllegalRequestException;
-import ua.training.cruise_company_servlet.service.NoEntityFoundException;
+import ua.training.cruise_company_servlet.service.exception.IllegalRequestException;
+import ua.training.cruise_company_servlet.service.exception.NoEntityFoundException;
 import ua.training.cruise_company_servlet.service.OrderService;
-import ua.training.cruise_company_servlet.service.UntimelyOperationException;
+import ua.training.cruise_company_servlet.service.exception.UntimelyOperationException;
 import ua.training.cruise_company_servlet.web.authentication.Authentication;
 import ua.training.cruise_company_servlet.web.command.Command;
 import ua.training.cruise_company_servlet.web.constant.AttributesConstants;

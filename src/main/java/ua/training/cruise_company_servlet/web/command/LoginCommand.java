@@ -7,7 +7,7 @@ import ua.training.cruise_company_servlet.web.authentication.Authentication;
 import ua.training.cruise_company_servlet.web.constant.AttributesConstants;
 import ua.training.cruise_company_servlet.web.constant.PathConstants;
 import ua.training.cruise_company_servlet.enums.UserRole;
-import ua.training.cruise_company_servlet.service.UserNotFoundException;
+import ua.training.cruise_company_servlet.service.exception.UserNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 

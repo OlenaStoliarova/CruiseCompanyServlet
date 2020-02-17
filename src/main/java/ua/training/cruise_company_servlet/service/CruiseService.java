@@ -6,6 +6,7 @@ import ua.training.cruise_company_servlet.dao.CruiseDao;
 import ua.training.cruise_company_servlet.dao.DaoFactory;
 import ua.training.cruise_company_servlet.entity.Cruise;
 import ua.training.cruise_company_servlet.entity.Ship;
+import ua.training.cruise_company_servlet.service.exception.NoEntityFoundException;
 import ua.training.cruise_company_servlet.utility.Page;
 import ua.training.cruise_company_servlet.utility.PaginationSettings;
 import ua.training.cruise_company_servlet.web.dto.CruiseDTO;

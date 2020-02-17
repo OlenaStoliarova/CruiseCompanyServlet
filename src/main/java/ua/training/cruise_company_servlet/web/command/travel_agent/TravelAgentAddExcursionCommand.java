@@ -7,8 +7,8 @@ import ua.training.cruise_company_servlet.web.form.ExcursionForm;
 import ua.training.cruise_company_servlet.web.form.mapper.ExcursionFormMapper;
 import ua.training.cruise_company_servlet.web.form.validator.ExcursionFormValidator;
 import ua.training.cruise_company_servlet.service.ExcursionService;
-import ua.training.cruise_company_servlet.service.NoEntityFoundException;
-import ua.training.cruise_company_servlet.service.NonUniqueObjectException;
+import ua.training.cruise_company_servlet.service.exception.NoEntityFoundException;
+import ua.training.cruise_company_servlet.service.exception.NonUniqueObjectException;
 import ua.training.cruise_company_servlet.service.SeaportService;
 
 import javax.servlet.http.HttpServletRequest;
