@@ -9,6 +9,16 @@ public interface AttributesConstants {
     String ERROR_UNKNOWN_USER = "unknown_user";
     String ERROR_ALREADY_LOGGED_IN = "already_loggedin";
 
+    String REGISTRATION_EMAIL = "email";
+    String REGISTRATION_PASSWORD = "password";
+    String REGISTRATION_REPEAT_PASSWORD = "repeatPassword";
+    String REGISTRATION_FIRST_NAME_EN = "nameEn";
+    String REGISTRATION_LAST_NAME_EN = "lastnameEn";
+    String REGISTRATION_FIRST_NAME_NATIVE = "nameNative";
+    String REGISTRATION_LAST_NAME_NATIVE = "lastnameNative";
+    String REGISTRATION_USER = "registration_user";
+    String ERROR_REGISTARTION_ERROR = "registration_error";
+
     String PAGE = "page";
     String SIZE = "size";
     String PAGINATION_TOTAL_PAGES = "total_pages";

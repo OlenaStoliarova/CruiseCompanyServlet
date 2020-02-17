@@ -14,12 +14,12 @@
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <br/>
-            <c:if test = "${unknown_user == true}">
+            <c:if test = "${requestScope.unknown_user == true}">
                 <div class="text-danger">
                     <fmt:message key="ui.login.error.incorrect.credentials" />
                 </div>
             </c:if>
-            <c:if test = "${already_loggedin == true}">
+            <c:if test = "${requestScope.already_loggedin == true}">
                 <div class="text-danger">
                     <fmt:message key="ui.login.error.already.logged.in" />
                 </div>
@@ -40,6 +40,13 @@
                         </div>
                         <input type="submit" class="btn btn-primary" value='<fmt:message key="ui.login.login"/>' />
                     </form>
+
+                    <div class="text-right">
+                        <fmt:message key="ui.registration.question" />
+                        <a class="btn btn-outline-secondary" href="${pageContext.request.contextPath}/app/registration">
+                            <fmt:message key="ui.registration.register" />
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

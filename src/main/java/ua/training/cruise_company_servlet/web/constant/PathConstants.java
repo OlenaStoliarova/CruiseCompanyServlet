@@ -8,6 +8,10 @@ public interface PathConstants {
     String LOGIN_COMMAND = "login";
     String LOGOUT_COMMAND = "logout";
     String LOGIN_JSP = "/login.jsp";
+    String REGISTRATION_COMMAND = "registration";
+    String REGISTRATION_JSP = "/WEB-INF/registration.jsp";
+    String REGISTRATION_SUCCESS_COMMAND = "registration_success";
+    String REGISTRATION_SUCCESS_JSP = "/WEB-INF/registrationSuccess.jsp";
 
     String ADMIN_FOLDER = "admin";
     String TRAVEL_AGENT_FOLDER = "travel_agent";

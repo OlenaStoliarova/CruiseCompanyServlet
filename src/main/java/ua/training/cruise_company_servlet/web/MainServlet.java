@@ -26,6 +26,8 @@ public class MainServlet extends HttpServlet {
     public void init(ServletConfig servletConfig){
         commands.put(PathConstants.LOGIN_COMMAND, new LoginCommand());
         commands.put(PathConstants.LOGOUT_COMMAND, new LogoutCommand());
+        commands.put(PathConstants.REGISTRATION_COMMAND, new RegistrationCommand());
+        commands.put(PathConstants.REGISTRATION_SUCCESS_COMMAND, new RegistrationSuccessCommand());
         commands.put(PathConstants.MAIN_COMMAND, new ToMainPageCommand());
         commands.put(PathConstants.ADMIN_MAIN_COMMAND, new AdminMainPageCommand());
         commands.put(PathConstants.TRAVEL_AGENT_MAIN_COMMAND, new TravelAgentMainPageCommand());
