@@ -13,17 +13,20 @@
 
 <h2><fmt:message key="ui.cruise.excursions" /></h2>
 <div class="container-fluid">
-    <c:if test="${empty requestScope.excursions && requestScope.untimely_operation != true}">
-        <div class="text-success"><fmt:message key="ui.excursion.all.empty.list"/></div>
-    </c:if>
     <c:if test="${requestScope.untimely_operation == true}">
         <h3 class="text-danger"><fmt:message key="ui.error.order.wrong.stage.to.add.excursions" /></h3>
         <div><fmt:message key="ui.order.id"/>: <c:out value="${requestScope.order.id}"/></div>
         <div><fmt:message key="ui.order.status" />:
             <%@ include file="/WEB-INF/fragments/orderStatusNice.jsp" %></div>
     </c:if>
+    <c:if test="${requestScope.illegal_request == true}">
+        <h3 class="text-danger"><fmt:message key="ui.error.attempt.to.change.someone.elses.order" /></h3>
+    </c:if>
 
-    <c:if test="${requestScope.untimely_operation != true}">
+    <c:if test="${requestScope.untimely_operation != true && requestScope.illegal_request != true}">
+        <c:if test="${empty requestScope.excursions}">
+            <div class="text-success"><fmt:message key="ui.excursion.all.empty.list"/></div>
+        </c:if>
         <form action="${pageContext.request.contextPath}/app/tourist/order/add_excursions" method="post">
             <input type="hidden" name="orderId" value="${param.orderId}"/>
             <fieldset>

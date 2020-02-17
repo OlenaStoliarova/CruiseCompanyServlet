@@ -2,9 +2,11 @@ package ua.training.cruise_company_servlet.web.command.tourist;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ua.training.cruise_company_servlet.service.IllegalRequestException;
 import ua.training.cruise_company_servlet.service.NoEntityFoundException;
 import ua.training.cruise_company_servlet.service.OrderService;
 import ua.training.cruise_company_servlet.service.UntimelyOperationException;
+import ua.training.cruise_company_servlet.web.authentication.Authentication;
 import ua.training.cruise_company_servlet.web.command.Command;
 import ua.training.cruise_company_servlet.web.constant.AttributesConstants;
 import ua.training.cruise_company_servlet.web.constant.PathConstants;
@@ -22,7 +24,7 @@ public class TouristOrderExcursionsCommand implements Command {
 
         OrderService orderService = new OrderService();
         try {
-            List<ExcursionDTO> excursionDTO = orderService.getAllExcursionsForOrderCruise(orderId);
+            List<ExcursionDTO> excursionDTO = orderService.getAllExcursionsForOrderCruise(orderId, new Authentication(request.getSession()).getUserId());
             request.setAttribute(AttributesConstants.ORDER_EXCURSIONS, excursionDTO);
         } catch (NoEntityFoundException e) {
             LOG.error(e.getMessage(), e);
@@ -34,7 +36,11 @@ public class TouristOrderExcursionsCommand implements Command {
             } catch (NoEntityFoundException ex) {
                 LOG.error(e.getMessage(), e);
             }
+        } catch (IllegalRequestException e) {
+            LOG.error(e.getMessage(), e);
+            request.setAttribute(AttributesConstants.ILLEGAL_REQUEST, true);
         }
+
         return PathConstants.TOURIST_ORDER_EXCURSIONS_JSP;
     }
 }

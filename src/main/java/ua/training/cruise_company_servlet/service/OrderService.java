@@ -78,12 +78,13 @@ public class OrderService {
         }
     }
 
-    public boolean cancelBooking(long orderId) throws NoEntityFoundException, UntimelyOperationException {
+    public boolean cancelBooking(long orderId, long userId) throws NoEntityFoundException, UntimelyOperationException, IllegalRequestException {
 
         try {
             TransactionManager.startTransaction();
 
             Order orderFromDB = getOrderById(orderId, false);
+            checkOwnership(userId, orderFromDB);
             if( !orderFromDB.getStatus().equals(OrderStatus.NEW)){
                 throw new UntimelyOperationException("Only NEW orders can be cancelled.");
             }
@@ -124,11 +125,12 @@ public class OrderService {
         return OrderDTOConverter.convertToDTO( getOrderById(orderId, isEagerLoad));
     }
 
-    public boolean payForOrder(long orderId) throws NoEntityFoundException, UntimelyOperationException {
+    public boolean payForOrder(long orderId, long userId) throws NoEntityFoundException, UntimelyOperationException, IllegalRequestException {
         try {
             TransactionManager.startTransaction();
 
             Order orderFromDB = getOrderById(orderId, false);
+            checkOwnership(userId, orderFromDB);
             if( !orderFromDB.getStatus().equals(OrderStatus.NEW)){
                 throw new UntimelyOperationException("Only NEW orders can be payed.");
             }
@@ -151,10 +153,11 @@ public class OrderService {
         }
     }
 
-    public List<ExcursionDTO> getAllExcursionsForOrderCruise(Long orderId) throws NoEntityFoundException, UntimelyOperationException {
+    public List<ExcursionDTO> getAllExcursionsForOrderCruise(Long orderId, long userId) throws NoEntityFoundException, UntimelyOperationException, IllegalRequestException {
         Order order = getOrderById(orderId, false);
-        if( !order.getStatus().equals(OrderStatus.PAID) && !order.getStatus().equals(OrderStatus.EXCURSIONS_ADDED)){
-            throw new UntimelyOperationException("Unexpected time to add excursions.");
+        checkOwnership(userId, order);
+        if( !order.getStatus().equals(OrderStatus.PAID)){
+            throw new UntimelyOperationException("Excursions can be added to PAID orders only.");
         }
 
         loadCruise(order);
@@ -165,11 +168,12 @@ public class OrderService {
         return new ExcursionService().getAllExcursionBySeaportIds(portIds);
     }
 
-    public boolean addExcursionsToOrder(long orderId, List<Long> chosenExcursions) throws UntimelyOperationException, NoEntityFoundException {
+    public boolean addExcursionsToOrder(long orderId, List<Long> chosenExcursions, long userId) throws UntimelyOperationException, NoEntityFoundException, IllegalRequestException {
         try {
             TransactionManager.startTransaction();
 
             Order orderFromDB = getOrderById(orderId, false);
+            checkOwnership(userId, orderFromDB);
             if( !orderFromDB.getStatus().equals(OrderStatus.PAID)){
                 throw new UntimelyOperationException("Excursions can be added to PAID orders only.");
             }
@@ -268,6 +272,13 @@ public class OrderService {
             TransactionManager.rollback();
         } catch (DAOLevelException ex) {
             LOG.error(ex.getMessage(), ex);
+        }
+    }
+
+    private void checkOwnership(long userId, Order order) throws IllegalRequestException {
+        if (order.getUser().getId().compareTo(userId) != 0) {
+            LOG.error("Attempt to change someone else's order");
+            throw new IllegalRequestException("User can change only his own orders.");
         }
     }
 }
