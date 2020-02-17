@@ -19,6 +19,11 @@ public class JDBCUserDao extends JDBCAbstractDao<User> implements UserDao {
     private static final String COLUMN_LAST_NAME_NATIVE = "last_name_native";
     private static final String COLUMN_ROLE = "role";
 
+    private static final String INSERT_NEW_USER = "INSERT INTO " + TABLE +
+            " (" + COLUMN_EMAIL + ", " + COLUMN_PASSWORD + ", " +
+            COLUMN_FIRST_NAME_EN + ", " + COLUMN_LAST_NAME_EN + ", " +
+            COLUMN_FIRST_NAME_NATIVE + ", " + COLUMN_LAST_NAME_NATIVE + ", " +
+            COLUMN_ROLE + ") VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     private static final String SELECT_USER_BY_EMAIL = "SELECT * FROM " + TABLE + " WHERE " + COLUMN_EMAIL + "=?";
     private static final String SELECT_USER_BY_ID = "SELECT * FROM " + TABLE + " WHERE " + COLUMN_ID + "=?";
@@ -27,8 +32,15 @@ public class JDBCUserDao extends JDBCAbstractDao<User> implements UserDao {
 
     @Override
     public boolean create(User entity) {
-        //TODO: add registration already!!!!
-        throw new UnsupportedOperationException("not implemented yet");
+        return executeCUDQuery(INSERT_NEW_USER, preparedStatement -> {
+            preparedStatement.setString(1, entity.getEmail());
+            preparedStatement.setString(2, entity.getPassword());
+            preparedStatement.setString(3, entity.getFirstNameEn());
+            preparedStatement.setString(4, entity.getLastNameEn());
+            preparedStatement.setString(5, entity.getFirstNameNative());
+            preparedStatement.setString(6, entity.getLastNameNative());
+            preparedStatement.setString(7, entity.getRole().toString());
+        });
     }
 
     @Override
