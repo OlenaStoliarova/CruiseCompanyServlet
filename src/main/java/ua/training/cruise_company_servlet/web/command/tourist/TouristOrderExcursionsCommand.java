@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.training.cruise_company_servlet.service.NoEntityFoundException;
 import ua.training.cruise_company_servlet.service.OrderService;
+import ua.training.cruise_company_servlet.service.UntimelyOperationException;
 import ua.training.cruise_company_servlet.web.command.Command;
 import ua.training.cruise_company_servlet.web.constant.AttributesConstants;
 import ua.training.cruise_company_servlet.web.constant.PathConstants;
@@ -25,6 +26,14 @@ public class TouristOrderExcursionsCommand implements Command {
             request.setAttribute(AttributesConstants.ORDER_EXCURSIONS, excursionDTO);
         } catch (NoEntityFoundException e) {
             LOG.error(e.getMessage(), e);
+        } catch (UntimelyOperationException e) {
+            LOG.error(e.getMessage(), e);
+            request.setAttribute(AttributesConstants.UNTIMELY_OPERATION, true);
+            try {
+                request.setAttribute(AttributesConstants.ORDER_OBJECT, orderService.getOrderDtoById(orderId, false));
+            } catch (NoEntityFoundException ex) {
+                LOG.error(e.getMessage(), e);
+            }
         }
         return PathConstants.TOURIST_ORDER_EXCURSIONS_JSP;
     }

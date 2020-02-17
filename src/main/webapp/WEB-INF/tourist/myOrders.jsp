@@ -18,6 +18,7 @@
         <table class="table table-condensed table-bordered table-hover">
             <thead>
             <tr class="table-primary">
+                <th><fmt:message key="ui.order.id"/></th>
                 <th><fmt:message key="ui.order.date"/></th>
                 <th><fmt:message key="ui.order.details"/></th>
                 <th><fmt:message key="ui.cruise.ticket.quantity"/></th>
@@ -31,6 +32,7 @@
             <tbody>
             <c:forEach var="order" items="${requestScope.orders}">
                 <tr>
+                    <td><c:out value="${order.id}"/></td>
                     <td><c:out value="${order.creationDate}"/></td>
                     <td>
                         <span><c:out value="${order.cruise.ship.routeName}"/></span>

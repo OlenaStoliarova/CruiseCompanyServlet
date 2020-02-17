@@ -48,56 +48,59 @@ public class OrderService {
 
     public boolean bookCruise(Long userId, Long cruiseId, int quantity) throws NoEntityFoundException {
         CruiseService cruiseService = new CruiseService();
-        Cruise cruise = cruiseService.getCruiseById(cruiseId);
-        cruise.setVacancies(cruise.getVacancies() - quantity);
 
         Order order = new Order();
         order.setStatus(OrderStatus.NEW);
         order.getUser().setId(userId);
         order.getCruise().setId(cruiseId);
         order.setQuantity(quantity);
-        order.setTotalPrice(cruise.getPrice().multiply(BigDecimal.valueOf(quantity)));
         order.setCreationDate(LocalDate.now());
 
         try {
             TransactionManager.startTransaction();
+
+            Cruise cruise = cruiseService.getCruiseById(cruiseId);
+            cruise.setVacancies(cruise.getVacancies() - quantity);
+            order.setTotalPrice(cruise.getPrice().multiply(BigDecimal.valueOf(quantity)));
+
             cruiseDao.update(cruise);
             orderDao.create(order);
             TransactionManager.commit();
+            return true;
         } catch (DAOLevelException e) {
             LOG.error("cruise wasn't booked ", e);
-            try {
-                TransactionManager.rollback();
-            } catch (DAOLevelException ex) {
-                LOG.error(ex.getMessage(), ex);
-            }
+            rollbackTransaction();
             return false;
+        } catch (NoEntityFoundException e) {
+            LOG.error("No cruise with provided id ({}) was found", cruiseId);
+            rollbackTransaction();
+            throw e;
         }
-
-        return true;
     }
 
-    public boolean cancelBooking(long orderId) throws NoEntityFoundException {
-        Order orderFromDB = orderDao.findById(orderId)
-                .orElseThrow(() -> new NoEntityFoundException("There is no order with provided id (" + orderId + ")"));
-
-        orderFromDB.setStatus(OrderStatus.CANCELED);
-        Cruise cruise = new CruiseService().getCruiseById( orderFromDB.getCruise().getId());
-        cruise.setVacancies(cruise.getVacancies() + orderFromDB.getQuantity());
+    public boolean cancelBooking(long orderId) throws NoEntityFoundException, UntimelyOperationException {
 
         try {
             TransactionManager.startTransaction();
+
+            Order orderFromDB = getOrderById(orderId, false);
+            if( !orderFromDB.getStatus().equals(OrderStatus.NEW)){
+                throw new UntimelyOperationException("Only NEW orders can be cancelled.");
+            }
+            orderFromDB.setStatus(OrderStatus.CANCELED);
+            Cruise cruise = new CruiseService().getCruiseById( orderFromDB.getCruise().getId());
+            cruise.setVacancies(cruise.getVacancies() + orderFromDB.getQuantity());
+
             cruiseDao.update(cruise);
             orderDao.update(orderFromDB);
             TransactionManager.commit();
         } catch (DAOLevelException e) {
             LOG.error("cruise booking wasn't cancelled ", e);
-            try {
-                TransactionManager.rollback();
-            } catch (DAOLevelException ex) {
-                LOG.error(ex.getMessage(), ex);
-            }
+            rollbackTransaction();
             return false;
+        } catch (NoEntityFoundException | UntimelyOperationException e) {
+            rollbackTransaction();
+            throw e;
         }
 
         return true;
@@ -121,14 +124,39 @@ public class OrderService {
         return OrderDTOConverter.convertToDTO( getOrderById(orderId, isEagerLoad));
     }
 
-    public boolean payForOrder(long orderId) throws NoEntityFoundException {
-        Order orderFromDB = getOrderById(orderId, false);
-        orderFromDB.setStatus(OrderStatus.PAID);
-        return orderDao.update(orderFromDB);
+    public boolean payForOrder(long orderId) throws NoEntityFoundException, UntimelyOperationException {
+        try {
+            TransactionManager.startTransaction();
+
+            Order orderFromDB = getOrderById(orderId, false);
+            if( !orderFromDB.getStatus().equals(OrderStatus.NEW)){
+                throw new UntimelyOperationException("Only NEW orders can be payed.");
+            }
+            orderFromDB.setStatus(OrderStatus.PAID);
+            boolean result = orderDao.update(orderFromDB);
+
+            TransactionManager.commit();
+            return result;
+        } catch (DAOLevelException e) {
+            LOG.error("error paying for order ", e);
+            rollbackTransaction();
+            return false;
+        } catch (NoEntityFoundException e) {
+            LOG.error("order with provided id ({}) wasn't found", orderId);
+            rollbackTransaction();
+            throw e;
+        } catch (UntimelyOperationException e) {
+            rollbackTransaction();
+            throw e;
+        }
     }
 
-    public List<ExcursionDTO> getAllExcursionsForOrderCruise(Long orderId) throws NoEntityFoundException {
+    public List<ExcursionDTO> getAllExcursionsForOrderCruise(Long orderId) throws NoEntityFoundException, UntimelyOperationException {
         Order order = getOrderById(orderId, false);
+        if( !order.getStatus().equals(OrderStatus.PAID) && !order.getStatus().equals(OrderStatus.EXCURSIONS_ADDED)){
+            throw new UntimelyOperationException("Unexpected time to add excursions.");
+        }
+
         loadCruise(order);
         List<Long> portIds = order.getCruise().getShip()
                 .getVisitingPorts().stream()
@@ -137,54 +165,63 @@ public class OrderService {
         return new ExcursionService().getAllExcursionBySeaportIds(portIds);
     }
 
-    public boolean addExcursionsToOrder(long orderId, List<Long> chosenExcursions) throws NoEntityFoundException {
-        Order orderFromDB = getOrderById(orderId, false);
-        orderFromDB.setStatus(OrderStatus.EXCURSIONS_ADDED);
-
+    public boolean addExcursionsToOrder(long orderId, List<Long> chosenExcursions) throws UntimelyOperationException, NoEntityFoundException {
         try {
             TransactionManager.startTransaction();
+
+            Order orderFromDB = getOrderById(orderId, false);
+            if( !orderFromDB.getStatus().equals(OrderStatus.PAID)){
+                throw new UntimelyOperationException("Excursions can be added to PAID orders only.");
+            }
+            orderFromDB.setStatus(OrderStatus.EXCURSIONS_ADDED);
+
             orderDao.addExcursionsToOrder(orderId, chosenExcursions);
             orderDao.update(orderFromDB);
             TransactionManager.commit();
+            return true;
         } catch (DAOLevelException e) {
             LOG.error("chosen excursions weren't added to order ", e);
-            try {
-                TransactionManager.rollback();
-            } catch (DAOLevelException ex) {
-                LOG.error(ex.getMessage(), ex);
-            }
+            rollbackTransaction();
             return false;
+        } catch (NoEntityFoundException | UntimelyOperationException e) {
+            rollbackTransaction();
+            throw e;
         }
-        return true;
     }
 
-    public List<ExtraDTO> getAllExtrasForOrderCruise(Long orderId) throws NoEntityFoundException {
+    public List<ExtraDTO> getAllExtrasForOrderCruise(Long orderId) throws NoEntityFoundException, UntimelyOperationException {
         Order order = getOrderById(orderId, false);
+        if( !order.getStatus().equals(OrderStatus.EXCURSIONS_ADDED)){
+            throw new UntimelyOperationException("Extra bonuses can be added only to orders with status EXCURSIONS_ADDED.");
+        }
         loadCruise(order);
         return order.getCruise().getShip().getExtras().stream()
                 .map(ExtraDTOConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public boolean addExtrasToOrder(long orderId, List<Long> chosenExtras) throws NoEntityFoundException {
-        Order orderFromDB = getOrderById(orderId, false);
-        orderFromDB.setStatus(OrderStatus.EXTRAS_ADDED);
-
+    public boolean addExtrasToOrder(long orderId, List<Long> chosenExtras) throws UntimelyOperationException, NoEntityFoundException {
         try {
             TransactionManager.startTransaction();
+
+            Order orderFromDB = getOrderById(orderId, false);
+            if( !orderFromDB.getStatus().equals(OrderStatus.EXCURSIONS_ADDED)){
+                throw new UntimelyOperationException("Extra bonuses can be added only to orders with status EXCURSIONS_ADDED.");
+            }
+            orderFromDB.setStatus(OrderStatus.EXTRAS_ADDED);
+
             orderDao.addExtrasToOrder(orderId, chosenExtras);
             orderDao.update(orderFromDB);
             TransactionManager.commit();
+            return true;
         } catch (DAOLevelException e) {
             LOG.error("chosen extras weren't added to order ", e);
-            try {
-                TransactionManager.rollback();
-            } catch (DAOLevelException ex) {
-                LOG.error(ex.getMessage(), ex);
-            }
+            rollbackTransaction();
             return false;
+        } catch (NoEntityFoundException | UntimelyOperationException e) {
+            rollbackTransaction();
+            throw e;
         }
-        return true;
     }
 
 
@@ -223,6 +260,14 @@ public class OrderService {
             }
             loadOrderExtras(order);
             loadOrderExcursions(order);
+        }
+    }
+
+    private void rollbackTransaction() {
+        try {
+            TransactionManager.rollback();
+        } catch (DAOLevelException ex) {
+            LOG.error(ex.getMessage(), ex);
         }
     }
 }

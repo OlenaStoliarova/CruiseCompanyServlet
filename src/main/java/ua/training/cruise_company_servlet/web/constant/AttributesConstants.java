@@ -60,5 +60,6 @@ public interface AttributesConstants {
     String ORDER_OBJECT = "order";
     String BONUSES = "bonuses";
     String ERROR_NO_ORDER_FOUND = "no_order_found";
+    String UNTIMELY_OPERATION = "untimely_operation";
     String CHOSEN_BONUSES = "chosenBonuses";
 }

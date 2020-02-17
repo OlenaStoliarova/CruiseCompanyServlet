@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.training.cruise_company_servlet.service.NoEntityFoundException;
 import ua.training.cruise_company_servlet.service.OrderService;
+import ua.training.cruise_company_servlet.service.UntimelyOperationException;
 import ua.training.cruise_company_servlet.web.command.Command;
 import ua.training.cruise_company_servlet.web.constant.AttributesConstants;
 import ua.training.cruise_company_servlet.web.constant.PathConstants;
@@ -19,7 +20,7 @@ public class TouristCancelOrderCommand implements Command {
         OrderService orderService = new OrderService();
         try {
             orderService.cancelBooking(orderId);
-        } catch (NoEntityFoundException e) {
+        } catch (NoEntityFoundException | UntimelyOperationException e) {
             LOG.error(e.getMessage(), e);
         }
         return PathConstants.REDIRECT_PREFIX + PathConstants.SERVLET_PATH + PathConstants.TOURIST_MANAGE_ORDERS_COMMAND;

@@ -17,6 +17,13 @@
     <div class="font-weight-bold">
         <span><fmt:message key="ui.price.total" />: <fmt:formatNumber value="${requestScope.order.totalPrice}"/></span>
     </div>
+    <c:if test="${requestScope.untimely_operation == true}">
+        <div>
+            <span class="font-weight-bold"><fmt:message key="ui.order.status" />:</span>
+            <%@ include file="/WEB-INF/fragments/orderStatusNice.jsp" %>
+        </div>
+        <h3 class="text-danger"><fmt:message key="ui.error.order.wrong.stage.to.add.bonuses" /></h3>
+    </c:if>
     <br/>
     <c:if test="${requestScope.no_order_found == true}">
         <h3 class="text-danger"><fmt:message key="ui.error.order.not.found" /></h3>
@@ -37,7 +44,7 @@
         </form>
     </c:if>
 
-    <c:if test="${empty requestScope.bonuses}">
+    <c:if test="${empty requestScope.bonuses && requestScope.untimely_operation != true}">
         <div class="text-success">No bonuses found</div>
     </c:if>
 </div>
