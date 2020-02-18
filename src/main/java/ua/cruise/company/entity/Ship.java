@@ -1,7 +1,7 @@
 package ua.cruise.company.entity;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Ship {
     private Long id;
@@ -10,13 +10,13 @@ public class Ship {
     private String routeNameEn;
     private String routeNameUkr;
     private int oneTripDurationDays;
-    private Set<Seaport> visitingPorts = new HashSet<>();
-    private Set<Extra> extras = new HashSet<>();
+    private List<Seaport> visitingPorts = new ArrayList<>();
+    private List<Extra> extras = new ArrayList<>();
 
     public Ship() {
     }
 
-    public Ship(Long id, String name, int capacity, String routeNameEn, String routeNameUkr, int oneTripDurationDays, Set<Seaport> visitingPorts, Set<Extra> extras) {
+    public Ship(Long id, String name, int capacity, String routeNameEn, String routeNameUkr, int oneTripDurationDays, List<Seaport> visitingPorts, List<Extra> extras) {
         this.id = id;
         this.name = name;
         this.capacity = capacity;
@@ -75,19 +75,19 @@ public class Ship {
         this.oneTripDurationDays = oneTripDurationDays;
     }
 
-    public Set<Seaport> getVisitingPorts() {
+    public List<Seaport> getVisitingPorts() {
         return visitingPorts;
     }
 
-    public void setVisitingPorts(Set<Seaport> visitingPorts) {
+    public void setVisitingPorts(List<Seaport> visitingPorts) {
         this.visitingPorts = visitingPorts;
     }
 
-    public Set<Extra> getExtras() {
+    public List<Extra> getExtras() {
         return extras;
     }
 
-    public void setExtras(Set<Extra> extras) {
+    public void setExtras(List<Extra> extras) {
         this.extras = extras;
     }
 }
