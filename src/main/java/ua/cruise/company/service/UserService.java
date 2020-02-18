@@ -21,7 +21,11 @@ import java.util.Optional;
 public class UserService {
     private static final Logger LOG = LogManager.getLogger(UserService.class);
 
-    private final UserDao userDao = DaoFactory.getInstance().createUserDao();
+    private UserDao userDao;
+
+    public UserService() {
+        this.userDao = DaoFactory.getInstance().createUserDao();
+    }
 
     public UserDTO checkUserOnLogin(String login, String password) throws UserNotFoundException {
 
