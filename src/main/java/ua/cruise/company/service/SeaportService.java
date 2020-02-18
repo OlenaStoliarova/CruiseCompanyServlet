@@ -18,7 +18,11 @@ import static java.util.Comparator.comparing;
 public class SeaportService {
     private static final Logger LOG = LogManager.getLogger(SeaportService.class);
 
-    private final SeaportDao seaportDao = DaoFactory.getInstance().createSeaportDao();
+    private SeaportDao seaportDao;
+
+    public SeaportService() {
+        this.seaportDao = DaoFactory.getInstance().createSeaportDao();
+    }
 
     public boolean savePort(Seaport seaport) {
         LOG.info("Saving port " + seaport);
