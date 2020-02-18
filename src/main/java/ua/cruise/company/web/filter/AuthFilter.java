@@ -60,7 +60,7 @@ public class AuthFilter implements Filter {
 
     private boolean isPathAllowedForUserRole(String path, UserRole role){
         if(path.startsWith(PathConstants.LOGOUT_COMMAND) || path.startsWith(PathConstants.LOGIN_COMMAND) ||
-                path.startsWith(PathConstants.MAIN_COMMAND))
+                path.startsWith(PathConstants.MAIN_COMMAND) || path.startsWith("/css"))
             return true;
 
         return (role.equals(UserRole.ROLE_ADMIN) && path.startsWith(PathConstants.ADMIN_FOLDER)) ||

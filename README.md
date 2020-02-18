@@ -13,5 +13,7 @@
 1. Clone project
 2. Run DBStructureAndData.sql from resources/DB folder
 3. Update DB login and password in src\main\webapp\META-INF\context.xml
-4. Compile and run war 
-5. Go to link http://localhost:8080/
+4. Compile and run war
+   - either Add Configuration with type Maven, command line - tomcat7:run, and Before launch Run Maven Goal - clean
+   - or Run in terminal command 'mvn clean tomcat7:run'
+5. Go to link http://localhost:8888/
