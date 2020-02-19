@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -78,6 +79,24 @@ public class CruiseServiceUnitTest {
     @Test( expected = NoEntityFoundException.class)
     public void shouldThrowNoEntityFoundExceptionWhenDtoNotFoundById() throws NoEntityFoundException {
         instance.getCruiseDtoById(NON_EXISTING_ID);
+    }
+
+    @Test
+    public void shouldReturnTrueWhenUpdateSuccess() {
+        when(cruiseDao.update(any(Cruise.class))).thenReturn(Boolean.TRUE);
+
+        boolean result = instance.update(cruise);
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void shouldReturnFalseWhenUpdateFail() {
+        when(cruiseDao.update(any(Cruise.class))).thenReturn(Boolean.FALSE);
+
+        boolean result = instance.update(cruise);
+
+        assertThat(result).isFalse();
     }
 
     @Test
