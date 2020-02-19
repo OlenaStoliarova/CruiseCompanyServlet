@@ -17,3 +17,7 @@
    - either Add Configuration with type Maven, command line - tomcat7:run, and Before launch Run Maven Goal - clean
    - or Run in terminal command 'mvn clean tomcat7:run'
 5. Go to link http://localhost:8888/
+6. Just in case here are credentials of already existing users:
+  - admin@a.a (password:admin, ROLE_ADMIN)
+  - boss@c.ua (password:boss, ROLE_TRAVEL_AGENT)
+  - misha@b.ua (password:user, ROLE_TOURIST)
