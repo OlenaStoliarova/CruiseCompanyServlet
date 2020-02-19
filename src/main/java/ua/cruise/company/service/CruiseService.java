@@ -20,12 +20,18 @@ import java.util.stream.Collectors;
 public class CruiseService {
     private static final Logger LOG = LogManager.getLogger(CruiseService.class);
 
-    private final CruiseDao cruiseDao = DaoFactory.getInstance().createCruiseDao();
+    private CruiseDao cruiseDao;
+    private ShipService shipService;
+
+    public CruiseService() {
+        cruiseDao = DaoFactory.getInstance().createCruiseDao();
+        shipService = new ShipService();
+    }
 
     public Page<CruiseDTO> getAvailableCruisesAfterDate(LocalDate date, PaginationSettings paginationSettings) {
         Page<Cruise> cruises = cruiseDao.findAllAvailableAfterDate(date, paginationSettings);
 
-        Iterator<Cruise> iterator = cruises.getContent().iterator();
+        Iterator<Cruise> iterator = cruises.getContent().listIterator();
         while (iterator.hasNext()) {
             Cruise cruise = iterator.next();
             try{
@@ -50,7 +56,7 @@ public class CruiseService {
     }
 
     private void loadShip(Cruise cruise) throws NoEntityFoundException {
-        Ship ship = new ShipService().getShipById(cruise.getShip().getId());
+        Ship ship = shipService.getShipById(cruise.getShip().getId());
         cruise.setShip(ship);
     }
 
