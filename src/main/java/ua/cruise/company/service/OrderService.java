@@ -2,7 +2,10 @@ package ua.cruise.company.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.cruise.company.dao.*;
+import ua.cruise.company.dao.DAOLevelException;
+import ua.cruise.company.dao.DaoFactory;
+import ua.cruise.company.dao.ExtraDao;
+import ua.cruise.company.dao.OrderDao;
 import ua.cruise.company.entity.*;
 import ua.cruise.company.enums.OrderStatus;
 import ua.cruise.company.persistence.TransactionManager;
@@ -19,7 +22,6 @@ import ua.cruise.company.web.dto.converter.OrderDTOConverter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,8 +29,19 @@ import java.util.stream.Collectors;
 public class OrderService {
     private static final Logger LOG = LogManager.getLogger(OrderService.class);
 
-    private final OrderDao orderDao = DaoFactory.getInstance().createOrderDao();
-    private final CruiseDao cruiseDao = DaoFactory.getInstance().createCruiseDao();
+    private OrderDao orderDao;
+    private UserService userService;
+    private CruiseService cruiseService;
+    private ExcursionService excursionService;
+    private ExtraDao extraDao;
+
+    public OrderService() {
+        orderDao = DaoFactory.getInstance().createOrderDao();
+        userService = new UserService();
+        cruiseService = new CruiseService();
+        excursionService = new ExcursionService();
+        extraDao = DaoFactory.getInstance().createExtraDao();
+    }
 
     public List<OrderDTO> allOrdersOfUser(Long userId) {
         List<Order> userOrders = orderDao.findByUserId(userId);
@@ -50,8 +63,6 @@ public class OrderService {
     }
 
     public boolean bookCruise(Long userId, Long cruiseId, int quantity) throws NoEntityFoundException {
-        CruiseService cruiseService = new CruiseService();
-
         Order order = new Order();
         order.setStatus(OrderStatus.NEW);
         order.getUser().setId(userId);
@@ -66,10 +77,17 @@ public class OrderService {
             cruise.setVacancies(cruise.getVacancies() - quantity);
             order.setTotalPrice(cruise.getPrice().multiply(BigDecimal.valueOf(quantity)));
 
-            cruiseDao.update(cruise);
-            orderDao.create(order);
-            TransactionManager.commit();
-            return true;
+            if( cruiseService.update(cruise)
+                && orderDao.create(order)){
+                TransactionManager.commit();
+                LOG.info("Oder was created " + order);
+                LOG.info("And cruise was updated");
+                return true;
+            } else {
+                LOG.error("error creating order or updating cruise");
+                rollbackTransaction();
+                return false;
+            }
         } catch (DAOLevelException e) {
             LOG.error("cruise wasn't booked ", e);
             rollbackTransaction();
@@ -92,12 +110,17 @@ public class OrderService {
                 throw new UntimelyOperationException("Only NEW orders can be cancelled.");
             }
             orderFromDB.setStatus(OrderStatus.CANCELED);
-            Cruise cruise = new CruiseService().getCruiseById( orderFromDB.getCruise().getId());
+            Cruise cruise = cruiseService.getCruiseById( orderFromDB.getCruise().getId());
             cruise.setVacancies(cruise.getVacancies() + orderFromDB.getQuantity());
 
-            cruiseDao.update(cruise);
-            orderDao.update(orderFromDB);
-            TransactionManager.commit();
+            if( cruiseService.update(cruise)
+                && orderDao.update(orderFromDB)){
+                TransactionManager.commit();
+                LOG.info("Oder was updated " + orderFromDB);
+                LOG.info("And cruise was updated " + cruise);
+            } else {
+                throw new NoEntityFoundException("Update operation haven't found rows to update");
+            }
         } catch (DAOLevelException e) {
             LOG.error("cruise booking wasn't cancelled ", e);
             rollbackTransaction();
@@ -141,6 +164,7 @@ public class OrderService {
             boolean result = orderDao.update(orderFromDB);
 
             TransactionManager.commit();
+            LOG.info("Payed for order " + orderFromDB);
             return result;
         } catch (DAOLevelException e) {
             LOG.error("error paying for order ", e);
@@ -182,10 +206,15 @@ public class OrderService {
             }
             orderFromDB.setStatus(OrderStatus.EXCURSIONS_ADDED);
 
-            orderDao.addExcursionsToOrder(orderId, chosenExcursions);
-            orderDao.update(orderFromDB);
-            TransactionManager.commit();
-            return true;
+            if( orderDao.addExcursionsToOrder(orderId, chosenExcursions)
+                && orderDao.update(orderFromDB)) {
+                TransactionManager.commit();
+                LOG.info("chosenExcursions ({}) was added to order {}", chosenExcursions, orderFromDB);
+                return true;
+            } else {
+                LOG.error("Error adding excursions to order");
+                return false;
+            }
         } catch (DAOLevelException e) {
             LOG.error("chosen excursions weren't added to order ", e);
             rollbackTransaction();
@@ -217,10 +246,15 @@ public class OrderService {
             }
             orderFromDB.setStatus(OrderStatus.EXTRAS_ADDED);
 
-            orderDao.addExtrasToOrder(orderId, chosenExtras);
-            orderDao.update(orderFromDB);
-            TransactionManager.commit();
-            return true;
+            if ( orderDao.addExtrasToOrder(orderId, chosenExtras)
+                && orderDao.update(orderFromDB)){
+                TransactionManager.commit();
+                LOG.info("Free extras ({}) was added to order {}", chosenExtras, orderFromDB);
+                return true;
+            } else {
+                LOG.error("Error adding extras to order");
+                return false;
+            }
         } catch (DAOLevelException e) {
             LOG.error("chosen extras weren't added to order ", e);
             rollbackTransaction();
@@ -233,25 +267,23 @@ public class OrderService {
 
 
     private void loadUser(Order order) throws NoEntityFoundException {
-        User user = new UserService().getUserById( order.getUser().getId());
+        User user = userService.getUserById( order.getUser().getId());
         order.setUser(user);
     }
 
     private void loadCruise(Order order) throws NoEntityFoundException {
-        Cruise cruise = new CruiseService().getCruiseById( order.getCruise().getId());
+        Cruise cruise = cruiseService.getCruiseById( order.getCruise().getId());
         order.setCruise( cruise);
     }
 
     private void loadOrderExtras(Order order){
-        ExtraDao extraDao = DaoFactory.getInstance().createExtraDao();
         List<Extra> extras = extraDao.findAllByOrderId(order.getId());
-        order.setFreeExtras(new HashSet<>(extras));
+        order.setFreeExtras(extras);
     }
 
     private void loadOrderExcursions(Order order){
-        ExcursionDao excursionDao = DaoFactory.getInstance().createExcursionDao();
-        List<Excursion> addedExcursions = excursionDao.findAllByOrderId(order.getId());
-        order.setExcursions(new HashSet<>(addedExcursions));
+        List<Excursion> addedExcursions = excursionService.gelAllExcursionByOrderId(order.getId());
+        order.setExcursions(addedExcursions);
     }
 
     private void eagerLoadOrders(List<Order> orders){

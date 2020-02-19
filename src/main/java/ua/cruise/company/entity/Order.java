@@ -4,8 +4,9 @@ import ua.cruise.company.enums.OrderStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Order {
     private Long id;
@@ -15,8 +16,8 @@ public class Order {
     private int quantity;
     private BigDecimal totalPrice;
     private OrderStatus status;
-    private Set<Excursion> excursions = new HashSet<>();
-    private Set<Extra> freeExtras = new HashSet<>();
+    private List<Excursion> excursions = new ArrayList<>();
+    private List<Extra> freeExtras = new ArrayList<>();
 
     public Order() {
         user = new User();
@@ -79,19 +80,34 @@ public class Order {
         this.status = status;
     }
 
-    public Set<Excursion> getExcursions() {
+    public List<Excursion> getExcursions() {
         return excursions;
     }
 
-    public void setExcursions(Set<Excursion> excursions) {
+    public void setExcursions(List<Excursion> excursions) {
         this.excursions = excursions;
     }
 
-    public Set<Extra> getFreeExtras() {
+    public List<Extra> getFreeExtras() {
         return freeExtras;
     }
 
-    public void setFreeExtras(Set<Extra> freeExtras) {
+    public void setFreeExtras(List<Extra> freeExtras) {
         this.freeExtras = freeExtras;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", creationDate=" + creationDate +
+                ", user=" + user.getId() +
+                ", cruise=" + cruise.getId() +
+                ", quantity=" + quantity +
+                ", totalPrice=" + totalPrice +
+                ", status=" + status +
+                ", excursions=" + excursions.stream().map(Excursion::getId).collect(Collectors.toList()) +
+                ", freeExtras=" + freeExtras.stream().map(Extra::getId).collect(Collectors.toList()) +
+                '}';
     }
 }

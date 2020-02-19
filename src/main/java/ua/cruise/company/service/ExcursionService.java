@@ -81,6 +81,14 @@ public class ExcursionService {
                 .collect(Collectors.toList());
     }
 
+    public List<Excursion> gelAllExcursionByOrderId(Long orderId){
+        List<Excursion> excursions = excursionDao.findAllByOrderId(orderId);
+        for( Excursion excursion : excursions){
+            loadSeaport(excursion);
+        }
+        return excursions;
+    }
+
     public void editExcursion(Long excursionId, ExcursionForm excursionForm) throws NoEntityFoundException, NonUniqueObjectException {
         Excursion excursion = createExcursionFromForm(excursionForm);
         excursion.setId(excursionId);

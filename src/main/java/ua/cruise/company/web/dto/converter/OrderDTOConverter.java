@@ -7,8 +7,8 @@ import ua.cruise.company.enums.OrderStatus;
 import ua.cruise.company.utility.LocalizationHelper;
 import ua.cruise.company.web.dto.OrderDTO;
 
+import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 public class OrderDTOConverter {
 
@@ -37,7 +37,7 @@ public class OrderDTOConverter {
         String lang = currentLocale.getLanguage();
 
         if( (order.getExcursions() != null) && (!order.getExcursions().isEmpty())){
-            Set<Excursion> excursions = order.getExcursions();
+            List<Excursion> excursions = order.getExcursions();
             StringBuilder excursionsStr = new StringBuilder();
             for( Excursion excursion: excursions){
                 if (lang.equalsIgnoreCase("uk"))
@@ -65,7 +65,7 @@ public class OrderDTOConverter {
         String lang = currentLocale.getLanguage();
 
         if ( (order.getFreeExtras() != null) && (!order.getFreeExtras().isEmpty())) {
-            Set<Extra> extras = order.getFreeExtras();
+            List<Extra> extras = order.getFreeExtras();
             StringBuilder extrasStr = new StringBuilder();
             for (Extra bonus : extras) {
                 if (lang.equalsIgnoreCase("uk"))

@@ -55,6 +55,20 @@ public class CruiseService {
         return CruiseDTOConverter.convertToDTO( getCruiseById(id));
     }
 
+    public boolean update(Cruise cruise){
+        LOG.info("Updating cruise " + cruise);
+        boolean isUpdated = cruiseDao.update(cruise);
+
+        if(isUpdated){
+            LOG.info("Cruise was updated");
+        } else{
+            LOG.info("Cruise was not updated");
+        }
+
+        return isUpdated;
+    }
+
+
     private void loadShip(Cruise cruise) throws NoEntityFoundException {
         Ship ship = shipService.getShipById(cruise.getShip().getId());
         cruise.setShip(ship);
