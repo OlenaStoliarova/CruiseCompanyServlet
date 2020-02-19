@@ -2,6 +2,7 @@ package ua.cruise.company.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Ship {
     private Long id;
@@ -89,5 +90,19 @@ public class Ship {
 
     public void setExtras(List<Extra> extras) {
         this.extras = extras;
+    }
+
+    @Override
+    public String toString() {
+        return "Ship{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", capacity=" + capacity +
+                ", routeNameEn='" + routeNameEn + '\'' +
+                ", routeNameUkr='" + routeNameUkr + '\'' +
+                ", oneTripDurationDays=" + oneTripDurationDays +
+                ", visitingPorts=" + visitingPorts.stream().map(Seaport::getId).collect(Collectors.toList()) +
+                ", extras=" + extras.stream().map(Extra::getId).collect(Collectors.toList()) +
+                '}';
     }
 }

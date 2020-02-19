@@ -37,4 +37,12 @@ public class Extra {
     public void setNameUkr(String nameUkr) {
         this.nameUkr = nameUkr;
     }
+
+    @Override
+    public String toString() {
+        return "Extra{" +
+                "id=" + id +
+                ", nameEn='" + nameEn + '\'' +
+                '}';
+    }
 }

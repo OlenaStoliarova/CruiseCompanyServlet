@@ -61,4 +61,15 @@ public class Cruise {
     public void setVacancies(int vacancies) {
         this.vacancies = vacancies;
     }
+
+    @Override
+    public String toString() {
+        return "Cruise{" +
+                "id=" + id +
+                ", startingDate=" + startingDate +
+                ", ship=" + ship +
+                ", price=" + price +
+                ", vacancies=" + vacancies +
+                '}';
+    }
 }
