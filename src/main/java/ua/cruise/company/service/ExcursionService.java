@@ -22,9 +22,13 @@ import java.util.stream.Collectors;
 public class ExcursionService {
     private static final Logger LOG = LogManager.getLogger(ExcursionService.class);
 
-    private final ExcursionDao excursionDao = DaoFactory.getInstance().createExcursionDao();
-    private final SeaportDao seaportDao = DaoFactory.getInstance().createSeaportDao();
+    private ExcursionDao excursionDao;
+    private SeaportDao seaportDao;
 
+    public ExcursionService() {
+        excursionDao = DaoFactory.getInstance().createExcursionDao();
+        seaportDao = DaoFactory.getInstance().createSeaportDao();
+    }
 
     public void saveExcursion(ExcursionForm excursionForm) throws NoEntityFoundException, NonUniqueObjectException {
         Excursion excursion = createExcursionFromForm(excursionForm);
