@@ -5,12 +5,6 @@ public class PaginationSettings {
     private long currentPageNumber;
 
     public PaginationSettings(int pageSize, long currentPageNumber) {
-        if (pageSize <= 0) {
-            throw new IllegalArgumentException("pageSize has to be positive number.");
-        }
-        if (currentPageNumber < 0) {
-            throw new IllegalArgumentException("currentPageNumber couldn't be a negative number.");
-        }
         this.pageSize = pageSize;
         this.currentPageNumber = currentPageNumber;
     }

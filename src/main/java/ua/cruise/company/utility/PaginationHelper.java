@@ -14,10 +14,16 @@ public class PaginationHelper {
 
     public static PaginationSettings getPaginationSettings(HttpServletRequest request) {
         try {
-            long page = Long.parseLong(request.getParameter(AttributesConstants.PAGE));
-            int size = Integer.parseInt(request.getParameter(AttributesConstants.SIZE));
+            long currentPageNumber = Long.parseLong(request.getParameter(AttributesConstants.PAGE));
+            int pageSize = Integer.parseInt(request.getParameter(AttributesConstants.SIZE));
+            if (pageSize <= 0) {
+                throw new IllegalArgumentException("pageSize has to be positive number.");
+            }
+            if (currentPageNumber < 0) {
+                throw new IllegalArgumentException("currentPageNumber couldn't be a negative number.");
+            }
 
-            return new PaginationSettings(size, page);
+            return new PaginationSettings(pageSize, currentPageNumber);
         } catch (IllegalArgumentException ex) {
             LOG.debug(ex.getMessage(), ex);
             return new PaginationSettings(DEFAULT_PAGE_SIZE, DEFAULT_CURRENT_PAGE);
