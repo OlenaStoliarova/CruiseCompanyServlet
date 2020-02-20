@@ -20,8 +20,7 @@ public class ConnectionPoolHolder {
             Context initContext = new InitialContext();
             dataSource = (DataSource) initContext.lookup("java:comp/env/jdbc/CruiseCompany");
         } catch (NamingException ex) {
-            LOG.error("Could not find DataSource jdbc/CruiseCompany");
-            LOG.error(ex.getMessage(), ex);
+            LOG.error("Could not find DataSource jdbc/CruiseCompany", ex);
             throw new RuntimeException(ex);
         }
     }

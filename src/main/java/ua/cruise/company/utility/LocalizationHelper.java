@@ -8,7 +8,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class LocalizationHelper {
-    public static final String MESSAGES_BUNDLE_NAME = "messages";
+    private static final String MESSAGES_BUNDLE_NAME = "messages";
 
     public static BigDecimal getPriceInLocaleCurrency(BigDecimal priceInUSD) {
         if (priceInUSD == null) {

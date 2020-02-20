@@ -24,7 +24,6 @@ public class TouristPayOrderCommand implements Command {
             boolean isPaid = orderService.payForOrder(orderId, new Authentication(request.getSession()).getUserId());
             if (!isPaid) {
                 LOG.warn("Payment was unsuccessful");
-                //TODO: show some error message if there was payment error
             }
         } catch (NoEntityFoundException | UntimelyOperationException | IllegalRequestException e) {
             LOG.error(e.getMessage(), e);
