@@ -27,23 +27,69 @@ public class Excursion {
         this.seaport = seaport;
     }
 
-    public Long getId() { return id; }
-    public String getNameEn() { return nameEn; }
-    public String getNameUkr() { return nameUkr; }
-    public String getDescriptionEn() { return descriptionEn; }
-    public String getDescriptionUkr() { return descriptionUkr; }
-    public Long getApproximateDurationHr() { return approximateDurationHr; }
-    public BigDecimal getPriceUSD() { return priceUSD; }
-    public Seaport getSeaport() { return seaport; }
+    public Long getId() {
+        return id;
+    }
 
-    public void setId(Long id) { this.id = id; }
-    public void setNameEn(String nameEn) { this.nameEn = nameEn; }
-    public void setNameUkr(String nameUkr) { this.nameUkr = nameUkr; }
-    public void setDescriptionEn(String descriptionEn) { this.descriptionEn = descriptionEn; }
-    public void setDescriptionUkr(String descriptionUkr) { this.descriptionUkr = descriptionUkr; }
-    public void setApproximateDurationHr(Long approximateDurationHr) { this.approximateDurationHr = approximateDurationHr; }
-    public void setPriceUSD(BigDecimal priceUSD) {  this.priceUSD = priceUSD; }
-    public void setSeaport(Seaport seaport) {   this.seaport = seaport; }
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNameEn() {
+        return nameEn;
+    }
+
+    public void setNameEn(String nameEn) {
+        this.nameEn = nameEn;
+    }
+
+    public String getNameUkr() {
+        return nameUkr;
+    }
+
+    public void setNameUkr(String nameUkr) {
+        this.nameUkr = nameUkr;
+    }
+
+    public String getDescriptionEn() {
+        return descriptionEn;
+    }
+
+    public void setDescriptionEn(String descriptionEn) {
+        this.descriptionEn = descriptionEn;
+    }
+
+    public String getDescriptionUkr() {
+        return descriptionUkr;
+    }
+
+    public void setDescriptionUkr(String descriptionUkr) {
+        this.descriptionUkr = descriptionUkr;
+    }
+
+    public Long getApproximateDurationHr() {
+        return approximateDurationHr;
+    }
+
+    public void setApproximateDurationHr(Long approximateDurationHr) {
+        this.approximateDurationHr = approximateDurationHr;
+    }
+
+    public BigDecimal getPriceUSD() {
+        return priceUSD;
+    }
+
+    public void setPriceUSD(BigDecimal priceUSD) {
+        this.priceUSD = priceUSD;
+    }
+
+    public Seaport getSeaport() {
+        return seaport;
+    }
+
+    public void setSeaport(Seaport seaport) {
+        this.seaport = seaport;
+    }
 
     @Override
     public String toString() {

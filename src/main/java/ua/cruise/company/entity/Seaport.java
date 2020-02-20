@@ -18,17 +18,45 @@ public class Seaport {
         this.countryUkr = countryUkr;
     }
 
-    public Long getId() { return id; }
-    public String getNameEn() { return nameEn; }
-    public String getNameUkr() { return nameUkr; }
-    public String getCountryEn() { return countryEn;  }
-    public String getCountryUkr() { return countryUkr;  }
+    public Long getId() {
+        return id;
+    }
 
-    public void setId(Long id) { this.id = id; }
-    public void setNameEn(String nameEn) { this.nameEn = nameEn; }
-    public void setNameUkr(String nameUkr) { this.nameUkr = nameUkr; }
-    public void setCountryEn(String countryEn) { this.countryEn = countryEn; }
-    public void setCountryUkr(String countryUkr) { this.countryUkr = countryUkr; }
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNameEn() {
+        return nameEn;
+    }
+
+    public void setNameEn(String nameEn) {
+        this.nameEn = nameEn;
+    }
+
+    public String getNameUkr() {
+        return nameUkr;
+    }
+
+    public void setNameUkr(String nameUkr) {
+        this.nameUkr = nameUkr;
+    }
+
+    public String getCountryEn() {
+        return countryEn;
+    }
+
+    public void setCountryEn(String countryEn) {
+        this.countryEn = countryEn;
+    }
+
+    public String getCountryUkr() {
+        return countryUkr;
+    }
+
+    public void setCountryUkr(String countryUkr) {
+        this.countryUkr = countryUkr;
+    }
 
     @Override
     public String toString() {

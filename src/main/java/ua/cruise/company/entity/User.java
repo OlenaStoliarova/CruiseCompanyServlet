@@ -12,7 +12,8 @@ public class User {
     private String lastNameNative;
     private UserRole role;
 
-    public User() {}
+    public User() {
+    }
 
     public User(Long id, String email, String password, String firstNameEn, String lastNameEn, String firstNameNative, String lastNameNative, UserRole role) {
         this.id = id;
@@ -25,41 +26,64 @@ public class User {
         this.role = role;
     }
 
-    public Long getId()                 { return id; }
-    public String getEmail()            { return email; }
-    public String getPassword()         { return password; }
-    public String getFirstNameEn()      { return firstNameEn; }
-    public String getLastNameEn()       { return lastNameEn; }
-    public String getFirstNameNative()  { return firstNameNative; }
-    public String getLastNameNative()   { return lastNameNative;  }
-    public UserRole getRole()           { return role; }
+    public Long getId() {
+        return id;
+    }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getFirstNameEn() {
+        return firstNameEn;
     }
 
     public void setFirstNameEn(String firstNameEn) {
         this.firstNameEn = firstNameEn;
     }
 
+    public String getLastNameEn() {
+        return lastNameEn;
+    }
+
     public void setLastNameEn(String lastNameEn) {
         this.lastNameEn = lastNameEn;
+    }
+
+    public String getFirstNameNative() {
+        return firstNameNative;
     }
 
     public void setFirstNameNative(String firstNameNative) {
         this.firstNameNative = firstNameNative;
     }
 
+    public String getLastNameNative() {
+        return lastNameNative;
+    }
+
     public void setLastNameNative(String lastNameNative) {
         this.lastNameNative = lastNameNative;
+    }
+
+    public UserRole getRole() {
+        return role;
     }
 
     public void setRole(UserRole role) {
