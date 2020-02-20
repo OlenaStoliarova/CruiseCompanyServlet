@@ -2,8 +2,8 @@ package ua.cruise.company.web.command.travel_agent;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ua.cruise.company.service.exception.NoEntityFoundException;
 import ua.cruise.company.service.OrderService;
+import ua.cruise.company.service.exception.NoEntityFoundException;
 import ua.cruise.company.service.exception.UntimelyOperationException;
 import ua.cruise.company.web.command.Command;
 import ua.cruise.company.web.constant.AttributesConstants;
@@ -19,7 +19,7 @@ public class TravelAgentAddExtrasToOrderCommand implements Command {
 
     @Override
     public String execute(HttpServletRequest request) {
-        if(request.getMethod().equalsIgnoreCase("GET")){
+        if (request.getMethod().equalsIgnoreCase("GET")) {
             showBonusesSelection(request);
             return PathConstants.TRAVEL_AGENT_ADD_EXTRAS_TO_ORDER_JSP;
         } else {
@@ -41,7 +41,7 @@ public class TravelAgentAddExtrasToOrderCommand implements Command {
         }
     }
 
-    private void addChosenBonusesToOrder(HttpServletRequest request){
+    private void addChosenBonusesToOrder(HttpServletRequest request) {
         long orderId = Long.parseLong(request.getParameter(AttributesConstants.ORDER_ID));
         String[] chosenBonuses = request.getParameterValues(AttributesConstants.CHOSEN_BONUSES);
         List<Long> extras = Arrays.stream(chosenBonuses)

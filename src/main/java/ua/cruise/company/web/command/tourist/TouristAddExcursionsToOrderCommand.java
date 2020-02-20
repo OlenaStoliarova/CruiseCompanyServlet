@@ -2,9 +2,9 @@ package ua.cruise.company.web.command.tourist;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ua.cruise.company.service.OrderService;
 import ua.cruise.company.service.exception.IllegalRequestException;
 import ua.cruise.company.service.exception.NoEntityFoundException;
-import ua.cruise.company.service.OrderService;
 import ua.cruise.company.service.exception.UntimelyOperationException;
 import ua.cruise.company.web.authentication.Authentication;
 import ua.cruise.company.web.command.Command;
@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TouristAddExcursionsToOrderCommand  implements Command {
+public class TouristAddExcursionsToOrderCommand implements Command {
     private static final Logger LOG = LogManager.getLogger(TouristAddExcursionsToOrderCommand.class);
 
     @Override

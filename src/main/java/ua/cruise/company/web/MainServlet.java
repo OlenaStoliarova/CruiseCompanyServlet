@@ -1,8 +1,7 @@
 package ua.cruise.company.web;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-
+import org.apache.logging.log4j.Logger;
 import ua.cruise.company.web.command.*;
 import ua.cruise.company.web.command.admin.*;
 import ua.cruise.company.web.command.tourist.*;
@@ -23,7 +22,7 @@ public class MainServlet extends HttpServlet {
 
     private Map<String, Command> commands = new HashMap<>();
 
-    public void init(ServletConfig servletConfig){
+    public void init(ServletConfig servletConfig) {
         commands.put(PathConstants.LOGIN_COMMAND, new LoginCommand());
         commands.put(PathConstants.LOGOUT_COMMAND, new LogoutCommand());
         commands.put(PathConstants.REGISTRATION_COMMAND, new RegistrationCommand());
@@ -56,6 +55,7 @@ public class MainServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
@@ -64,9 +64,9 @@ public class MainServlet extends HttpServlet {
             throws ServletException, IOException {
         String path = request.getRequestURI();
         path = path.toLowerCase();
-        path = path.replaceAll(".*" + PathConstants.SERVLET_PATH , "");
+        path = path.replaceAll(".*" + PathConstants.SERVLET_PATH, "");
         Command command = commands.get(path);
-        if(command == null){
+        if (command == null) {
             LOG.warn("non existing page request (" + path + ")");
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -75,11 +75,10 @@ public class MainServlet extends HttpServlet {
 
         String page = command.execute(request);
 
-        if( page.startsWith(PathConstants.REDIRECT_PREFIX)){
+        if (page.startsWith(PathConstants.REDIRECT_PREFIX)) {
             page = page.replaceFirst(PathConstants.REDIRECT_PREFIX, "");
             response.sendRedirect(page);
-        }
-        else {
+        } else {
             request.getRequestDispatcher(page).forward(request, response);
         }
     }

@@ -23,11 +23,10 @@ public class TravelAgentManageExcursionsCommand implements Command {
         Page<ExcursionDTO> page;
 
         String strSeaportId = request.getParameter(AttributesConstants.EXCURSION_PORT);
-        if(strSeaportId != null){
+        if (strSeaportId != null) {
             long seaportId = Long.parseLong(strSeaportId);
             page = excursionService.getAllExcursionsForTravelAgent(seaportId, paginationSettings);
-        }
-        else {
+        } else {
             page = excursionService.getAllExcursionsForTravelAgent(paginationSettings);
         }
 

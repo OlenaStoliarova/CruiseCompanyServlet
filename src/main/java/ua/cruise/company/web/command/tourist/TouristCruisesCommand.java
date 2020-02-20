@@ -19,10 +19,11 @@ public class TouristCruisesCommand implements Command {
 
         LocalDate fromDate = LocalDate.now();
         String strFilterDate = request.getParameter("fromDate");
-        if(strFilterDate != null) {
+        if (strFilterDate != null) {
             try {
                 fromDate = LocalDate.parse(strFilterDate);
-            } catch(Exception ignored){}
+            } catch (Exception ignored) {
+            }
         }
 
         PaginationSettings paginationSettings = PaginationHelper.getPaginationSettings(request);

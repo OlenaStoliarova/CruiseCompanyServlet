@@ -1,15 +1,15 @@
 package ua.cruise.company.web.command.travel_agent;
 
+import ua.cruise.company.service.ExcursionService;
+import ua.cruise.company.service.SeaportService;
+import ua.cruise.company.service.exception.NoEntityFoundException;
+import ua.cruise.company.service.exception.NonUniqueObjectException;
 import ua.cruise.company.web.command.Command;
 import ua.cruise.company.web.constant.AttributesConstants;
 import ua.cruise.company.web.constant.PathConstants;
 import ua.cruise.company.web.form.ExcursionForm;
 import ua.cruise.company.web.form.mapper.ExcursionFormMapper;
 import ua.cruise.company.web.form.validator.ExcursionFormValidator;
-import ua.cruise.company.service.ExcursionService;
-import ua.cruise.company.service.exception.NoEntityFoundException;
-import ua.cruise.company.service.exception.NonUniqueObjectException;
-import ua.cruise.company.service.SeaportService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,12 +22,12 @@ public class TravelAgentAddExcursionCommand implements Command {
         ExcursionForm excursionForm = new ExcursionFormMapper().fillForm(request);
 
         ExcursionFormValidator validator = new ExcursionFormValidator();
-        if( validator.isFormNotCompleted(excursionForm)){
+        if (validator.isFormNotCompleted(excursionForm)) {
             setExcursionFormAttributes(request, excursionForm);
             return PathConstants.TRAVEL_AGENT_ADD_EXCURSION_JSP;
         }
 
-        if( !validator.isFormValid(excursionForm)){
+        if (!validator.isFormValid(excursionForm)) {
             setExcursionFormAttributes(request, excursionForm);
             request.setAttribute(AttributesConstants.ERROR_VALIDATION, true);
             return PathConstants.TRAVEL_AGENT_ADD_EXCURSION_JSP;
@@ -49,7 +49,7 @@ public class TravelAgentAddExcursionCommand implements Command {
     }
 
 
-    private void setExcursionFormAttributes(HttpServletRequest request, ExcursionForm excursionForm){
+    private void setExcursionFormAttributes(HttpServletRequest request, ExcursionForm excursionForm) {
         request.setAttribute(AttributesConstants.EXCURSION_OBJECT, excursionForm);
         request.setAttribute(AttributesConstants.ALL_SEAPORTS, seaportService.getAllSeaportsLocalizedSorted());
     }
