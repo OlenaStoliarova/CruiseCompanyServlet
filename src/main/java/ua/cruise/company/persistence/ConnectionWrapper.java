@@ -33,7 +33,7 @@ public class ConnectionWrapper implements AutoCloseable {
 
     @Override
     public void close() throws SQLException {
-        if(!isTransaction()){
+        if (!isTransaction()) {
             connection.close();
         }
     }

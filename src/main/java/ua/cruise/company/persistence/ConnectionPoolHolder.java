@@ -26,7 +26,7 @@ public class ConnectionPoolHolder {
         }
     }
 
-    private ConnectionPoolHolder(){
+    private ConnectionPoolHolder() {
     }
 
     public static Connection getConnection() {

@@ -14,7 +14,7 @@ public class TransactionManager {
     public static ConnectionWrapper getConnection() {
         ConnectionWrapper connectionWrapper = connectionWrapThreadLocal.get();
 
-        if(connectionWrapper != null){
+        if (connectionWrapper != null) {
             return connectionWrapper;
         }
 
@@ -22,10 +22,10 @@ public class TransactionManager {
         return connectionWrapper;
     }
 
-    public static void startTransaction(){
+    public static void startTransaction() {
         ConnectionWrapper connectionWrapper = connectionWrapThreadLocal.get();
 
-        if(connectionWrapper != null){
+        if (connectionWrapper != null) {
             throw new DAOLevelException("Transaction already started");
         }
 
@@ -39,10 +39,10 @@ public class TransactionManager {
         connectionWrapThreadLocal.set(connectionWrapper);
     }
 
-    public static void commit(){
+    public static void commit() {
         ConnectionWrapper connectionWrapper = connectionWrapThreadLocal.get();
 
-        if(connectionWrapper == null){
+        if (connectionWrapper == null) {
             throw new DAOLevelException("Transaction not started to be commit.");
         }
 
@@ -59,10 +59,10 @@ public class TransactionManager {
 
     }
 
-    public static void rollback(){
+    public static void rollback() {
         ConnectionWrapper connectionWrapper = connectionWrapThreadLocal.get();
 
-        if(connectionWrapper == null){
+        if (connectionWrapper == null) {
             throw new DAOLevelException("Transaction not started to be rolled back.");
         }
 
