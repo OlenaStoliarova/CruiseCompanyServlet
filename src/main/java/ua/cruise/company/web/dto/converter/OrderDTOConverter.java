@@ -15,47 +15,48 @@ public class OrderDTOConverter {
     public static OrderDTO convertToDTO(Order order) {
         OrderDTO dto = new OrderDTO();
 
-        if(order == null){
+        if (order == null) {
             return dto;
         }
 
-        dto.setId( order.getId() );
-        dto.setCreationDate( LocalizationHelper.getDateInLocaleFormat(order.getCreationDate()) );
-        dto.setUser( UserDTOConverter.convertToDTO( order.getUser() ));
-        dto.setCruise( CruiseDTOConverter.convertToDTO( order.getCruise()));
-        dto.setQuantity( order.getQuantity());
-        dto.setTotalPrice( LocalizationHelper.getPriceInLocaleCurrency( order.getTotalPrice()));
-        dto.setStatus( order.getStatus().toString() );
-        dto.setAddedExcursions( convertOrderExcursionsToString(order));
-        dto.setFreeExtras( convertOrderFreeExtrasToString(order));
+        dto.setId(order.getId());
+        dto.setCreationDate(LocalizationHelper.getDateInLocaleFormat(order.getCreationDate()));
+        dto.setUser(UserDTOConverter.convertToDTO(order.getUser()));
+        dto.setCruise(CruiseDTOConverter.convertToDTO(order.getCruise()));
+        dto.setQuantity(order.getQuantity());
+        dto.setTotalPrice(LocalizationHelper.getPriceInLocaleCurrency(order.getTotalPrice()));
+        dto.setStatus(order.getStatus().toString());
+        dto.setAddedExcursions(convertOrderExcursionsToString(order));
+        dto.setFreeExtras(convertOrderFreeExtrasToString(order));
 
         return dto;
     }
 
-    private static String convertOrderExcursionsToString(Order order){
+    private static String convertOrderExcursionsToString(Order order) {
         Locale currentLocale = Locale.getDefault();
         String lang = currentLocale.getLanguage();
 
-        if( (order.getExcursions() != null) && (!order.getExcursions().isEmpty())){
+        if ((order.getExcursions() != null) && (!order.getExcursions().isEmpty())) {
             List<Excursion> excursions = order.getExcursions();
             StringBuilder excursionsStr = new StringBuilder();
-            for( Excursion excursion: excursions){
+            for (Excursion excursion : excursions) {
                 if (lang.equalsIgnoreCase("uk"))
                     excursionsStr.append(excursion.getNameUkr());
                 else
                     excursionsStr.append(excursion.getNameEn());
                 excursionsStr.append(";\n");
             }
-            excursionsStr.replace( excursionsStr.lastIndexOf(";\n"), excursionsStr.length(), "");
+            excursionsStr.replace(excursionsStr.lastIndexOf(";\n"), excursionsStr.length(), "");
 
             return excursionsStr.toString();
         }
 
         try {
-            if ( order.getStatus().compareTo(OrderStatus.EXCURSIONS_ADDED) >= 0) {
+            if (order.getStatus().compareTo(OrderStatus.EXCURSIONS_ADDED) >= 0) {
                 return "-";
             }
-        } catch (NullPointerException ignored){}
+        } catch (NullPointerException ignored) {
+        }
 
         return "";
     }
@@ -64,7 +65,7 @@ public class OrderDTOConverter {
         Locale currentLocale = Locale.getDefault();
         String lang = currentLocale.getLanguage();
 
-        if ( (order.getFreeExtras() != null) && (!order.getFreeExtras().isEmpty())) {
+        if ((order.getFreeExtras() != null) && (!order.getFreeExtras().isEmpty())) {
             List<Extra> extras = order.getFreeExtras();
             StringBuilder extrasStr = new StringBuilder();
             for (Extra bonus : extras) {

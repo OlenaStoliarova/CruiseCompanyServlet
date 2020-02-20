@@ -14,25 +14,25 @@ public class ShipDTOConverter {
     public static ShipDTO convertToDTO(Ship ship) {
         ShipDTO dto = new ShipDTO();
 
-        if(ship == null){
+        if (ship == null) {
             return dto;
         }
 
-        dto.setId( ship.getId() );
-        dto.setName( ship.getName() );
-        dto.setCapacity( ship.getCapacity() );
-        dto.setOneTripDurationDays( ship.getOneTripDurationDays() );
+        dto.setId(ship.getId());
+        dto.setName(ship.getName());
+        dto.setCapacity(ship.getCapacity());
+        dto.setOneTripDurationDays(ship.getOneTripDurationDays());
 
         setLocaleSpecificFields(dto, ship);
 
-        if(ship.getExtras() != null) {
+        if (ship.getExtras() != null) {
             List<ExtraDTO> extras = ship.getExtras().stream()
                     .map(ExtraDTOConverter::convertToDTO)
                     .collect(Collectors.toList());
             dto.setExtras(extras);
         }
 
-        if(ship.getVisitingPorts() != null) {
+        if (ship.getVisitingPorts() != null) {
             List<SeaportDTO> seaports = ship.getVisitingPorts().stream()
                     .map(SeaportDTOConverter::convertToDTO)
                     .collect(Collectors.toList());
@@ -42,14 +42,14 @@ public class ShipDTOConverter {
         return dto;
     }
 
-    private static void setLocaleSpecificFields(ShipDTO dto, Ship ship){
+    private static void setLocaleSpecificFields(ShipDTO dto, Ship ship) {
         Locale currentLocale = Locale.getDefault();
 
-        if(currentLocale.getLanguage().equalsIgnoreCase("uk")){
-            dto.setRouteName( ship.getRouteNameUkr());
+        if (currentLocale.getLanguage().equalsIgnoreCase("uk")) {
+            dto.setRouteName(ship.getRouteNameUkr());
             return;
         }
 
-        dto.setRouteName( ship.getRouteNameEn());
+        dto.setRouteName(ship.getRouteNameEn());
     }
 }
