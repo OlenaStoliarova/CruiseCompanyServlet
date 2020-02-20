@@ -19,20 +19,16 @@ public class Page<T> {
         this.totalElements = totalElements;
     }
 
-    public void setTotalElements(Long totalElements) {
-        this.totalElements = totalElements;
-    }
-
-    public void setContent(List<T> content) {
-        this.content = content;
-    }
-
     public long getTotalElements() {
         return totalElements;
     }
 
+    public void setTotalElements(Long totalElements) {
+        this.totalElements = totalElements;
+    }
+
     public long getTotalPages() {
-        return (long)Math.ceil((double)totalElements / (double)size);
+        return (long) Math.ceil((double) totalElements / (double) size);
     }
 
     public long getCurrentPageNumber() {
@@ -45,6 +41,10 @@ public class Page<T> {
 
     public List<T> getContent() {
         return content;
+    }
+
+    public void setContent(List<T> content) {
+        this.content = content;
     }
 
     @Override
