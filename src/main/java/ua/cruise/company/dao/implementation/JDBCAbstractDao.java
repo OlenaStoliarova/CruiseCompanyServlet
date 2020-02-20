@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class JDBCAbstractDao<T>{
+public abstract class JDBCAbstractDao<T> {
     private static final Logger LOG = LogManager.getLogger(JDBCAbstractDao.class);
 
     protected static final String COLUMN_ID = "id";
@@ -24,7 +24,7 @@ public abstract class JDBCAbstractDao<T>{
     private static final String SELECT_COUNT = "SELECT COUNT(*) as total_elements ";
 
     protected boolean executeCUDQuery(String query, StatementMapper statementMapper) {
-       return executeCUDQuery(query, statementMapper, 1);
+        return executeCUDQuery(query, statementMapper, 1);
     }
 
     protected boolean executeCUDQuery(String query, StatementMapper statementMapper, int numberOfRows) {
@@ -34,7 +34,7 @@ public abstract class JDBCAbstractDao<T>{
             statementMapper.map(preparedStatement);
 
             return numberOfRows == preparedStatement.executeUpdate();
-        }catch (SQLIntegrityConstraintViolationException ex){
+        } catch (SQLIntegrityConstraintViolationException ex) {
             LOG.error(ex.getMessage(), ex);
             return false;
         } catch (SQLException e) {
@@ -50,7 +50,7 @@ public abstract class JDBCAbstractDao<T>{
              PreparedStatement preparedStatement = connectionWrapper.prepareStatement(query)) {
 
             statementMapper.map(preparedStatement);
-            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     foundEntity = Optional.of(objectMapper.extractFromResultSet(resultSet));
                 }
@@ -103,13 +103,13 @@ public abstract class JDBCAbstractDao<T>{
             throw new DAOLevelException(e);
         }
 
-        long offset = (paginationSettings.getCurrentPageNumber()-1) * paginationSettings.getPageSize();
+        long offset = (paginationSettings.getCurrentPageNumber() - 1) * paginationSettings.getPageSize();
         String queryWithLimitAndOffset = query + " LIMIT " + offset + ", " + paginationSettings.getPageSize();
         LOG.debug("queryWithLimitAndOffset: " + queryWithLimitAndOffset);
 
         Page<T> resultPage = new Page<>(paginationSettings);
         resultPage.setTotalElements(totalRowsInResultSet);
-        resultPage.setContent( selectMany(queryWithLimitAndOffset, statementMapper,objectMapper));
+        resultPage.setContent(selectMany(queryWithLimitAndOffset, statementMapper, objectMapper));
 
         return resultPage;
     }
