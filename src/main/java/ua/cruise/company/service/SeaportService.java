@@ -4,9 +4,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ua.cruise.company.dao.DaoFactory;
 import ua.cruise.company.dao.SeaportDao;
+import ua.cruise.company.entity.Seaport;
 import ua.cruise.company.web.dto.SeaportDTO;
 import ua.cruise.company.web.dto.converter.SeaportDTOConverter;
-import ua.cruise.company.entity.Seaport;
 
 import java.text.Collator;
 import java.util.List;

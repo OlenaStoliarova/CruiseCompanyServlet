@@ -35,9 +35,9 @@ public class ExcursionService {
         LOG.info("Saving excursion " + excursion);
         boolean isCreated = excursionDao.create(excursion);
 
-        if(isCreated){
+        if (isCreated) {
             LOG.info("Excursion was saved (created)");
-        } else{
+        } else {
             LOG.info("Excursion wasn't saved");
             Long portId = excursion.getSeaport().getId();
             seaportDao.findById(portId).orElseThrow(() -> new NoEntityFoundException("There is no port with provided id (" + portId + ")"));
@@ -51,14 +51,14 @@ public class ExcursionService {
     }
 
     public Page<ExcursionDTO> getAllExcursionsForTravelAgent(long seaportId, PaginationSettings paginationSettings) {
-        Page<Excursion> excursions = excursionDao.findBySeaportIdOrderByNameEn(seaportId,paginationSettings);
+        Page<Excursion> excursions = excursionDao.findBySeaportIdOrderByNameEn(seaportId, paginationSettings);
         return getExcursionDTOPage(excursions, paginationSettings);
     }
 
-    public boolean deleteExcursion(Long id){
+    public boolean deleteExcursion(Long id) {
         LOG.info("Deleting excursion " + id);
         boolean result = excursionDao.delete(id);
-        if(result){
+        if (result) {
             LOG.info(" excursion was deleted");
         } else {
             LOG.info(" excursion was NOT deleted");
@@ -71,9 +71,9 @@ public class ExcursionService {
                 .orElseThrow(() -> new NoEntityFoundException("There is no excursion with provided id (" + id + ")"));
     }
 
-    public List<ExcursionDTO> getAllExcursionBySeaportIds(List<Long> portIds){
+    public List<ExcursionDTO> getAllExcursionBySeaportIds(List<Long> portIds) {
         List<Excursion> excursions = excursionDao.findAllBySeaportIds(portIds);
-        for( Excursion excursion : excursions){
+        for (Excursion excursion : excursions) {
             loadSeaport(excursion);
         }
         return excursions.stream()
@@ -81,9 +81,9 @@ public class ExcursionService {
                 .collect(Collectors.toList());
     }
 
-    public List<Excursion> gelAllExcursionByOrderId(Long orderId){
+    public List<Excursion> gelAllExcursionByOrderId(Long orderId) {
         List<Excursion> excursions = excursionDao.findAllByOrderId(orderId);
-        for( Excursion excursion : excursions){
+        for (Excursion excursion : excursions) {
             loadSeaport(excursion);
         }
         return excursions;
@@ -95,9 +95,9 @@ public class ExcursionService {
         LOG.info("Editing excursion " + excursion);
         boolean isUpdated = excursionDao.update(excursion);
 
-        if(isUpdated){
+        if (isUpdated) {
             LOG.info("Excursion was updated");
-        } else{
+        } else {
             LOG.info("Excursion was not updated");
             Long portId = excursion.getSeaport().getId();
             seaportDao.findById(portId).orElseThrow(() -> new NoEntityFoundException("There is no port with provided id (" + portId + ")"));
@@ -105,13 +105,13 @@ public class ExcursionService {
         }
     }
 
-    private Excursion createExcursionFromForm(ExcursionForm form){
+    private Excursion createExcursionFromForm(ExcursionForm form) {
         Excursion excursion = new Excursion();
         excursion.setNameEn(form.getNameEn());
         excursion.setNameUkr(form.getNameUkr());
         excursion.setDescriptionEn(form.getDescriptionEn());
         excursion.setDescriptionUkr(form.getDescriptionUkr());
-        excursion.setApproximateDurationHr(Long.parseLong( form.getApproximateDurationHr()));
+        excursion.setApproximateDurationHr(Long.parseLong(form.getApproximateDurationHr()));
         excursion.setPriceUSD(new BigDecimal(form.getPriceUSD()));
         Seaport seaport = new Seaport();
         seaport.setId(Long.parseLong(form.getSeaportId()));
@@ -119,14 +119,14 @@ public class ExcursionService {
         return excursion;
     }
 
-    private void loadSeaport(Excursion excursion){
+    private void loadSeaport(Excursion excursion) {
         Seaport seaport = seaportDao.findById(excursion.getSeaport().getId()).orElse(new Seaport());
         excursion.setSeaport(seaport);
     }
 
-    private Page<ExcursionDTO> getExcursionDTOPage(Page<Excursion> excursionsPage, PaginationSettings paginationSettings){
+    private Page<ExcursionDTO> getExcursionDTOPage(Page<Excursion> excursionsPage, PaginationSettings paginationSettings) {
         List<Excursion> excursions = excursionsPage.getContent();
-        for( Excursion excursion : excursions){
+        for (Excursion excursion : excursions) {
             loadSeaport(excursion);
         }
         List<ExcursionDTO> contentDTO = excursionsPage.getContent().stream()

@@ -39,8 +39,6 @@ public class UserService {
         User userFromDB = userOptional.get();
         LOG.info(userFromDB);
 
-        // Check that an unencrypted password matches one that has
-        // previously been hashed
         if (BCrypt.checkpw(password, userFromDB.getPassword())) {
             LOG.info("password is correct");
             return UserDTOConverter.convertToDTO(userFromDB);
@@ -68,7 +66,7 @@ public class UserService {
     }
 
     public User getUserByEmail(String email) throws NoEntityFoundException {
-        return userDao.findByEmail( email)
+        return userDao.findByEmail(email)
                 .orElseThrow(() -> new NoEntityFoundException("There is no user with provided email (" + email + ")"));
     }
 
@@ -77,10 +75,10 @@ public class UserService {
         LOG.info("Creating new user " + user);
         boolean isCreated = userDao.create(user);
 
-        if(isCreated){
+        if (isCreated) {
             LOG.info("User was created successfully");
-            return getUserByEmail( registrationForm.getEmail());
-        } else{
+            return getUserByEmail(registrationForm.getEmail());
+        } else {
             LOG.info("User wasn't created");
             throw new NonUniqueObjectException("User with such email already exists");
         }
@@ -90,13 +88,13 @@ public class UserService {
     private User createUserFromForm(RegistrationForm form) {
         User user = new User();
 
-        user.setEmail( form.getEmail());
-        user.setFirstNameEn( form.getFirstNameEn());
-        user.setLastNameEn( form.getLastNameEn());
-        user.setFirstNameNative( form.getFirstNameNative());
-        user.setLastNameNative( form.getLastNameNative());
+        user.setEmail(form.getEmail());
+        user.setFirstNameEn(form.getFirstNameEn());
+        user.setLastNameEn(form.getLastNameEn());
+        user.setFirstNameNative(form.getFirstNameNative());
+        user.setLastNameNative(form.getLastNameNative());
         user.setRole(UserRole.ROLE_TOURIST);
-        user.setPassword( BCrypt.hashpw( form.getPassword(), BCrypt.gensalt()));
+        user.setPassword(BCrypt.hashpw(form.getPassword(), BCrypt.gensalt()));
 
         return user;
     }

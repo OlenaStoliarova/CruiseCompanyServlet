@@ -34,9 +34,9 @@ public class CruiseService {
         Iterator<Cruise> iterator = cruises.getContent().listIterator();
         while (iterator.hasNext()) {
             Cruise cruise = iterator.next();
-            try{
+            try {
                 loadShip(cruise);
-            } catch (NoEntityFoundException ex){
+            } catch (NoEntityFoundException ex) {
                 LOG.debug(ex.getMessage(), ex);
                 iterator.remove();
             }
@@ -52,16 +52,16 @@ public class CruiseService {
     }
 
     public CruiseDTO getCruiseDtoById(long id) throws NoEntityFoundException {
-        return CruiseDTOConverter.convertToDTO( getCruiseById(id));
+        return CruiseDTOConverter.convertToDTO(getCruiseById(id));
     }
 
-    public boolean update(Cruise cruise){
+    public boolean update(Cruise cruise) {
         LOG.info("Updating cruise " + cruise);
         boolean isUpdated = cruiseDao.update(cruise);
 
-        if(isUpdated){
+        if (isUpdated) {
             LOG.info("Cruise was updated");
-        } else{
+        } else {
             LOG.info("Cruise was not updated");
         }
 

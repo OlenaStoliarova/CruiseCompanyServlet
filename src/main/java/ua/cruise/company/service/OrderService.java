@@ -77,8 +77,8 @@ public class OrderService {
             cruise.setVacancies(cruise.getVacancies() - quantity);
             order.setTotalPrice(cruise.getPrice().multiply(BigDecimal.valueOf(quantity)));
 
-            if( cruiseService.update(cruise)
-                && orderDao.create(order)){
+            if (cruiseService.update(cruise)
+                    && orderDao.create(order)) {
                 TransactionManager.commit();
                 LOG.info("Oder was created " + order);
                 LOG.info("And cruise was updated");
@@ -106,15 +106,15 @@ public class OrderService {
 
             Order orderFromDB = getOrderById(orderId, false);
             checkOwnership(userId, orderFromDB);
-            if( !orderFromDB.getStatus().equals(OrderStatus.NEW)){
+            if (!orderFromDB.getStatus().equals(OrderStatus.NEW)) {
                 throw new UntimelyOperationException("Only NEW orders can be cancelled.");
             }
             orderFromDB.setStatus(OrderStatus.CANCELED);
-            Cruise cruise = cruiseService.getCruiseById( orderFromDB.getCruise().getId());
+            Cruise cruise = cruiseService.getCruiseById(orderFromDB.getCruise().getId());
             cruise.setVacancies(cruise.getVacancies() + orderFromDB.getQuantity());
 
-            if( cruiseService.update(cruise)
-                && orderDao.update(orderFromDB)){
+            if (cruiseService.update(cruise)
+                    && orderDao.update(orderFromDB)) {
                 TransactionManager.commit();
                 LOG.info("Oder was updated " + orderFromDB);
                 LOG.info("And cruise was updated " + cruise);
@@ -137,7 +137,7 @@ public class OrderService {
         Order order = orderDao.findById(orderId)
                 .orElseThrow(() -> new NoEntityFoundException("There is no order with provided id (" + orderId + ")"));
 
-        if(isEagerLoad) {
+        if (isEagerLoad) {
             loadUser(order);
             loadCruise(order);
             loadOrderExtras(order);
@@ -148,7 +148,7 @@ public class OrderService {
     }
 
     public OrderDTO getOrderDtoById(long orderId, boolean isEagerLoad) throws NoEntityFoundException {
-        return OrderDTOConverter.convertToDTO( getOrderById(orderId, isEagerLoad));
+        return OrderDTOConverter.convertToDTO(getOrderById(orderId, isEagerLoad));
     }
 
     public boolean payForOrder(long orderId, long userId) throws NoEntityFoundException, UntimelyOperationException, IllegalRequestException {
@@ -157,7 +157,7 @@ public class OrderService {
 
             Order orderFromDB = getOrderById(orderId, false);
             checkOwnership(userId, orderFromDB);
-            if( !orderFromDB.getStatus().equals(OrderStatus.NEW)){
+            if (!orderFromDB.getStatus().equals(OrderStatus.NEW)) {
                 throw new UntimelyOperationException("Only NEW orders can be payed.");
             }
             orderFromDB.setStatus(OrderStatus.PAID);
@@ -183,7 +183,7 @@ public class OrderService {
     public List<ExcursionDTO> getAllExcursionsForOrderCruise(Long orderId, long userId) throws NoEntityFoundException, UntimelyOperationException, IllegalRequestException {
         Order order = getOrderById(orderId, false);
         checkOwnership(userId, order);
-        if( !order.getStatus().equals(OrderStatus.PAID)){
+        if (!order.getStatus().equals(OrderStatus.PAID)) {
             throw new UntimelyOperationException("Excursions can be added to PAID orders only.");
         }
 
@@ -201,13 +201,13 @@ public class OrderService {
 
             Order orderFromDB = getOrderById(orderId, false);
             checkOwnership(userId, orderFromDB);
-            if( !orderFromDB.getStatus().equals(OrderStatus.PAID)){
+            if (!orderFromDB.getStatus().equals(OrderStatus.PAID)) {
                 throw new UntimelyOperationException("Excursions can be added to PAID orders only.");
             }
             orderFromDB.setStatus(OrderStatus.EXCURSIONS_ADDED);
 
-            if( orderDao.addExcursionsToOrder(orderId, chosenExcursions)
-                && orderDao.update(orderFromDB)) {
+            if (orderDao.addExcursionsToOrder(orderId, chosenExcursions)
+                    && orderDao.update(orderFromDB)) {
                 TransactionManager.commit();
                 LOG.info("chosenExcursions ({}) was added to order {}", chosenExcursions, orderFromDB);
                 return true;
@@ -227,7 +227,7 @@ public class OrderService {
 
     public List<ExtraDTO> getAllExtrasForOrderCruise(Long orderId) throws NoEntityFoundException, UntimelyOperationException {
         Order order = getOrderById(orderId, false);
-        if( !order.getStatus().equals(OrderStatus.EXCURSIONS_ADDED)){
+        if (!order.getStatus().equals(OrderStatus.EXCURSIONS_ADDED)) {
             throw new UntimelyOperationException("Extra bonuses can be added only to orders with status EXCURSIONS_ADDED.");
         }
         loadCruise(order);
@@ -241,13 +241,13 @@ public class OrderService {
             TransactionManager.startTransaction();
 
             Order orderFromDB = getOrderById(orderId, false);
-            if( !orderFromDB.getStatus().equals(OrderStatus.EXCURSIONS_ADDED)){
+            if (!orderFromDB.getStatus().equals(OrderStatus.EXCURSIONS_ADDED)) {
                 throw new UntimelyOperationException("Extra bonuses can be added only to orders with status EXCURSIONS_ADDED.");
             }
             orderFromDB.setStatus(OrderStatus.EXTRAS_ADDED);
 
-            if ( orderDao.addExtrasToOrder(orderId, chosenExtras)
-                && orderDao.update(orderFromDB)){
+            if (orderDao.addExtrasToOrder(orderId, chosenExtras)
+                    && orderDao.update(orderFromDB)) {
                 TransactionManager.commit();
                 LOG.info("Free extras ({}) was added to order {}", chosenExtras, orderFromDB);
                 return true;
@@ -267,33 +267,33 @@ public class OrderService {
 
 
     private void loadUser(Order order) throws NoEntityFoundException {
-        User user = userService.getUserById( order.getUser().getId());
+        User user = userService.getUserById(order.getUser().getId());
         order.setUser(user);
     }
 
     private void loadCruise(Order order) throws NoEntityFoundException {
-        Cruise cruise = cruiseService.getCruiseById( order.getCruise().getId());
-        order.setCruise( cruise);
+        Cruise cruise = cruiseService.getCruiseById(order.getCruise().getId());
+        order.setCruise(cruise);
     }
 
-    private void loadOrderExtras(Order order){
+    private void loadOrderExtras(Order order) {
         List<Extra> extras = extraDao.findAllByOrderId(order.getId());
         order.setFreeExtras(extras);
     }
 
-    private void loadOrderExcursions(Order order){
+    private void loadOrderExcursions(Order order) {
         List<Excursion> addedExcursions = excursionService.gelAllExcursionByOrderId(order.getId());
         order.setExcursions(addedExcursions);
     }
 
-    private void eagerLoadOrders(List<Order> orders){
+    private void eagerLoadOrders(List<Order> orders) {
         Iterator<Order> iterator = orders.iterator();
         while (iterator.hasNext()) {
             Order order = iterator.next();
-            try{
+            try {
                 loadUser(order);
                 loadCruise(order);
-            } catch (NoEntityFoundException ex){
+            } catch (NoEntityFoundException ex) {
                 LOG.debug(ex.getMessage(), ex);
                 iterator.remove();
             }

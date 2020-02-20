@@ -33,8 +33,8 @@ public class ShipService {
     }
 
     public List<ShipDTO> getAllShips() {
-        List<Ship> ships= shipDao.findAll();
-        for(Ship s : ships){
+        List<Ship> ships = shipDao.findAll();
+        for (Ship s : ships) {
             loadShipExtras(s);
             loadSeaportsOfShipRoute(s);
         }
@@ -44,12 +44,12 @@ public class ShipService {
                 .collect(Collectors.toList());
     }
 
-    private void loadSeaportsOfShipRoute(Ship ship){
+    private void loadSeaportsOfShipRoute(Ship ship) {
         List<Seaport> seaports = seaportDao.findAllOfShipRoute(ship.getId());
         ship.setVisitingPorts(seaports);
     }
 
-    private void loadShipExtras(Ship ship){
+    private void loadShipExtras(Ship ship) {
         List<Extra> extras = extraDao.findAllByShipId(ship.getId());
         ship.setExtras(extras);
     }
