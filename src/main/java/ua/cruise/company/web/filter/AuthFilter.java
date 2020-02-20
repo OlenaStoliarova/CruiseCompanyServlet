@@ -2,9 +2,9 @@ package ua.cruise.company.web.filter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ua.cruise.company.enums.UserRole;
 import ua.cruise.company.web.authentication.Authentication;
 import ua.cruise.company.web.constant.PathConstants;
-import ua.cruise.company.enums.UserRole;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +13,7 @@ import java.io.IOException;
 
 public class AuthFilter implements Filter {
     private static final Logger LOG = LogManager.getLogger(AuthFilter.class);
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
@@ -25,10 +26,10 @@ public class AuthFilter implements Filter {
 
         String path = request.getRequestURI();
         path = path.toLowerCase();
-        path = path.replaceAll(".*" + PathConstants.SERVLET_PATH , "");
+        path = path.replaceAll(".*" + PathConstants.SERVLET_PATH, "");
 
         Authentication authentication = new Authentication(request.getSession());
-        if( ! authentication.isLoggedIn() ) {
+        if (!authentication.isLoggedIn()) {
             if (isAuthenticationNeeded(path)) {
                 LOG.warn("guest tried to access '" + path + "'");
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
@@ -39,8 +40,8 @@ public class AuthFilter implements Filter {
         }
         UserRole role = authentication.getUserRole();
 
-        if(isPathAllowedForUserRole(path,role)){
-            filterChain.doFilter(servletRequest,servletResponse);
+        if (isPathAllowedForUserRole(path, role)) {
+            filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
         String user = authentication.getUserName();
@@ -52,14 +53,14 @@ public class AuthFilter implements Filter {
     public void destroy() {
     }
 
-    private boolean isAuthenticationNeeded(String path){
-        return  path.startsWith(PathConstants.ADMIN_FOLDER) ||
+    private boolean isAuthenticationNeeded(String path) {
+        return path.startsWith(PathConstants.ADMIN_FOLDER) ||
                 path.startsWith(PathConstants.TOURIST_FOLDER) ||
                 path.startsWith(PathConstants.TRAVEL_AGENT_FOLDER);
     }
 
-    private boolean isPathAllowedForUserRole(String path, UserRole role){
-        if(path.startsWith(PathConstants.LOGOUT_COMMAND) || path.startsWith(PathConstants.LOGIN_COMMAND) ||
+    private boolean isPathAllowedForUserRole(String path, UserRole role) {
+        if (path.startsWith(PathConstants.LOGOUT_COMMAND) || path.startsWith(PathConstants.LOGIN_COMMAND) ||
                 path.startsWith(PathConstants.MAIN_COMMAND) || path.startsWith("/css"))
             return true;
 
