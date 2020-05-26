@@ -16,7 +16,7 @@ import ua.cruise.company.web.dto.converter.UserDTOConverter;
 import ua.cruise.company.web.form.RegistrationForm;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Predicate;
 
 public class UserService {
     private static final Logger LOG = LogManager.getLogger(UserService.class);
@@ -29,23 +29,12 @@ public class UserService {
 
     public UserDTO checkUserOnLogin(String login, String password) throws UserNotFoundException {
 
-        Optional<User> userOptional = userDao.findByEmail(login);
+        Predicate<User> isPasswordCorrect = userFromDB -> BCrypt.checkpw(password, userFromDB.getPassword());
 
-        if (!userOptional.isPresent()) {
-            LOG.info("login '" + login + "' not found in the DB");
-            throw new UserNotFoundException("login not found in the DB");
-        }
-
-        User userFromDB = userOptional.get();
-        LOG.info(userFromDB);
-
-        if (BCrypt.checkpw(password, userFromDB.getPassword())) {
-            LOG.info("password is correct");
-            return UserDTOConverter.convertToDTO(userFromDB);
-        } else {
-            LOG.error("entered password does not match the one from the DB");
-            throw new UserNotFoundException("incorrect password");
-        }
+        return userDao.findByEmail(login)
+                .filter(isPasswordCorrect)
+                .map(UserDTOConverter::convertToDTO)
+                .orElseThrow(() -> new UserNotFoundException("incorrect login credentials"));
     }
 
     public List<User> getAllUsers() {
